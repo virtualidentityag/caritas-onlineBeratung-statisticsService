@@ -2,6 +2,7 @@ package de.caritas.cob.statisticsservice.api.statistics.repository;
 
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import java.time.Instant;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -77,4 +78,7 @@ public interface StatisticsEventRepository extends MongoRepository<StatisticsEve
    */
   @Query(value = "{'user._id': ?0, 'eventType': 'ASSIGN_SESSION', 'timestamp':{$gte:?1,$lte:?2}}", count = true)
   long calculateNumberOfAssignedSessionsForUser(String userId, Instant dateFrom, Instant dateTo);
+
+  @Query(value = "{'eventType': 'REGISTRATION'}")
+  List<StatisticsEvent> getAllRegistrationStatistics();
 }

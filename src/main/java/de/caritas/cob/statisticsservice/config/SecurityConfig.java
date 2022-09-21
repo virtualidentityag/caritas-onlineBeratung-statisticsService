@@ -1,9 +1,13 @@
 package de.caritas.cob.statisticsservice.config;
 
 import static de.caritas.cob.statisticsservice.api.authorization.Authority.CONSULTANT;
+import static de.caritas.cob.statisticsservice.api.authorization.Authority.SINGLE_TENANT_ADMIN;
+import static de.caritas.cob.statisticsservice.api.authorization.Authority.TENANT_ADMIN;
 
 import de.caritas.cob.statisticsservice.api.authorization.RoleAuthorizationAuthorityMapper;
+import de.caritas.cob.statisticsservice.filter.HttpTenantFilter;
 import de.caritas.cob.statisticsservice.filter.StatelessCsrfFilter;
+import javax.annotation.Nullable;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -47,6 +51,13 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Autowired
   private Environment environment;
 
+  @Autowired(required = false)
+  @Nullable
+  private HttpTenantFilter httpTenantFilter;
+
+  @Value("${multitenancy.enabled}")
+  private boolean multitenancyEnabled;
+
   /**
    * Processes HTTP requests and checks for a valid spring security authentication for the
    * (Keycloak) principal (authorization header).
@@ -63,13 +74,22 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.csrf().disable()
+    HttpSecurity httpSecurity = http.csrf().disable()
         .addFilterBefore(new StatelessCsrfFilter(csrfCookieProperty, csrfHeaderProperty),
-            CsrfFilter.class)
+            CsrfFilter.class);
+
+    if (multitenancyEnabled) {
+      httpSecurity = httpSecurity
+          .addFilterAfter(httpTenantFilter, KeycloakAuthenticatedActionsFilter.class);
+    }
+
+    httpSecurity
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .sessionAuthenticationStrategy(sessionAuthenticationStrategy()).and().authorizeRequests()
         .antMatchers(WHITE_LIST).permitAll()
         .antMatchers("/statistics/consultant").hasAuthority(CONSULTANT.getAuthority())
+        .antMatchers("/statistics/registration").hasAnyAuthority(SINGLE_TENANT_ADMIN.getAuthority(),
+            TENANT_ADMIN.getAuthority())
         .anyRequest().denyAll();
   }
 

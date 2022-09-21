@@ -1,7 +1,9 @@
 package de.caritas.cob.statisticsservice.api.controller;
 
 import static de.caritas.cob.statisticsservice.api.testhelper.PathConstants.PATH_GET_CONSULTANT_STATISTICS;
+import static de.caritas.cob.statisticsservice.api.testhelper.PathConstants.PATH_GET_REGISTRATION_STATISTICS;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTANT_STATISTICS_RESPONSE_DTO;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.REGISTRATION_STATISTICS_LIST_RESPONSE_DTO;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.DATE_FROM;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.DATE_FROM_FORMATTED;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.DATE_TO;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.caritas.cob.statisticsservice.StatisticsServiceApplication;
 import de.caritas.cob.statisticsservice.api.authorization.RoleAuthorizationAuthorityMapper;
 import de.caritas.cob.statisticsservice.api.service.LogService;
+import de.caritas.cob.statisticsservice.api.statistics.service.RegistrationStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.service.StatisticsService;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +52,10 @@ public class StatisticsControllerIT {
   MongoTemplate mongoTemplate;
   @MockBean
   StatisticsService statisticsService;
+
+  @MockBean
+  RegistrationStatisticsService registrationStatisticsService;
+
   @Mock
   private Logger logger;
 
@@ -69,11 +76,30 @@ public class StatisticsControllerIT {
         .andExpect(content().json(consultantStatisticsResponseDtoToJson()));
   }
 
+  @Test
+  public void getRegistrationStatistics_Should_ReturnStatisticsDataAndOk() throws Exception {
+
+    when(registrationStatisticsService.fetchRegistrationStatisticsData()).thenReturn(REGISTRATION_STATISTICS_LIST_RESPONSE_DTO);
+
+    mvc.perform(
+            get(PATH_GET_REGISTRATION_STATISTICS)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().json(registrationStatisticsResponseDtoToJson()));
+  }
+
   private String consultantStatisticsResponseDtoToJson() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     return objectMapper.writeValueAsString(CONSULTANT_STATISTICS_RESPONSE_DTO);
+  }
+
+  private String registrationStatisticsResponseDtoToJson() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    return objectMapper.writeValueAsString(REGISTRATION_STATISTICS_LIST_RESPONSE_DTO);
   }
 
 }

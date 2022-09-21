@@ -9,8 +9,9 @@ import java.util.stream.Stream;
  */
 public enum Authority {
 
-  CONSULTANT("consultant", AuthorityValue.CONSULTANT_DEFAULT);
-
+  CONSULTANT("consultant", AuthorityValue.CONSULTANT_DEFAULT),
+  SINGLE_TENANT_ADMIN("single-tenant-admin", AuthorityValue.SINGLE_TENANT_ADMIN),
+  TENANT_ADMIN("tenant-admin", AuthorityValue.TENANT_ADMIN);
   private final String roleName;
   private final String authorityName;
 
@@ -48,6 +49,8 @@ public enum Authority {
 
     public static final String PREFIX = "AUTHORIZATION_";
     public static final String CONSULTANT_DEFAULT = PREFIX + "CONSULTANT_DEFAULT";
+    public static final String SINGLE_TENANT_ADMIN = PREFIX + "SINGLE_TENANT_ADMIN";
+    public static final String TENANT_ADMIN = PREFIX + "TENANT_ADMIN";
   }
 
 }

@@ -1,6 +1,8 @@
 package de.caritas.cob.statisticsservice.api.controller;
 
 import de.caritas.cob.statisticsservice.api.model.ConsultantStatisticsResponseDTO;
+import de.caritas.cob.statisticsservice.api.model.RegistrationStatisticsListResponseDTO;
+import de.caritas.cob.statisticsservice.api.statistics.service.RegistrationStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.service.StatisticsService;
 import de.caritas.cob.statisticsservice.generated.api.controller.StatisticsApi;
 import io.swagger.annotations.Api;
@@ -20,6 +22,8 @@ public class StatisticsController implements StatisticsApi {
 
   private final @NonNull StatisticsService statisticsService;
 
+  private final @NonNull RegistrationStatisticsService registrationStatisticsService;
+
   /**
    * Returns statistical data for a consultant.
    *
@@ -35,4 +39,10 @@ public class StatisticsController implements StatisticsApi {
         HttpStatus.OK);
   }
 
+  @Override
+  public ResponseEntity<RegistrationStatisticsListResponseDTO> getRegistrationStatistics() {
+    return new ResponseEntity<>(
+        registrationStatisticsService.fetchRegistrationStatisticsData(),
+        HttpStatus.OK);
+  }
 }

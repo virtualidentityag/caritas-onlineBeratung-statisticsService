@@ -1,7 +1,7 @@
 package de.caritas.cob.statisticsservice.api.service;
 
 import de.caritas.cob.statisticsservice.api.service.securityheader.TenantHeaderSupplier;
-import de.caritas.cob.statisticsservice.config.cache.SessionCacheManagerConfig;
+import de.caritas.cob.statisticsservice.config.cache.CacheManagerConfig;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.UserStatisticsControllerApi;
 import de.caritas.cob.statisticsservice.api.service.securityheader.SecurityHeaderSupplier;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
@@ -24,7 +24,7 @@ public class UserStatisticsService {
    * @param sessionId the session id
    * @return an {@link SessionStatisticsResultDTO} instance
    */
-  @Cacheable(value = SessionCacheManagerConfig.SESSION_CACHE, key = "#sessionId")
+  @Cacheable(value = CacheManagerConfig.SESSION_CACHE, key = "#sessionId")
   public SessionStatisticsResultDTO retrieveSessionViaSessionId(Long sessionId) {
     return retrieveSession(sessionId, null);
   }
@@ -35,7 +35,7 @@ public class UserStatisticsService {
    * @param rcGroupId the Rocket.Chat group id
    * @return an {@link SessionStatisticsResultDTO} instance
    */
-  @Cacheable(value = SessionCacheManagerConfig.SESSION_CACHE, key = "#rcGroupId")
+  @Cacheable(value = CacheManagerConfig.SESSION_CACHE, key = "#rcGroupId")
   public SessionStatisticsResultDTO retrieveSessionViaRcGroupId(String rcGroupId) {
     return retrieveSession(null, rcGroupId);
   }
