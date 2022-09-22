@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import de.caritas.cob.statisticsservice.StatisticsServiceApplication;
 import de.caritas.cob.statisticsservice.api.authorization.Authority.AuthorityValue;
 import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventRepository;
+import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventTenantAwareRepository;
 import javax.servlet.http.Cookie;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,9 @@ public class StatisticsControllerAuthorizationIT {
   MongoTemplate mongoTemplate;
   @MockBean
   StatisticsEventRepository statisticsEventRepository;
+
+  @MockBean
+  StatisticsEventTenantAwareRepository statisticsEventTenantAwareRepository;
 
   @Test
   @WithMockUser(authorities = {AuthorityValue.CONSULTANT_DEFAULT})

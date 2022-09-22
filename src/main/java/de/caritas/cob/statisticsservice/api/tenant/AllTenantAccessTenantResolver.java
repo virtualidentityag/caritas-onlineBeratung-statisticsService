@@ -1,6 +1,5 @@
 package de.caritas.cob.statisticsservice.api.tenant;
 
-import static de.caritas.cob.statisticsservice.api.authorization.UserRole.TECHNICAL;
 import static de.caritas.cob.statisticsservice.api.authorization.UserRole.TENANT_ADMIN;
 
 import java.util.Arrays;
@@ -12,15 +11,17 @@ import org.keycloak.representations.AccessToken;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TechnicalTenantResolver implements TenantResolver {
+public class AllTenantAccessTenantResolver implements TenantResolver {
+
+  private static final long TECHNICAL_TENANT = 0L;
 
   @Override
   public Optional<Long> resolve(HttpServletRequest request) {
-    return isTechnicalOrTenantSuperAdminUserRole(request) ? Optional.of(0L) : Optional.empty();
+    return isSuperAdminUserRole(request) ? Optional.of(TECHNICAL_TENANT) : Optional.empty();
   }
 
-  private boolean isTechnicalOrTenantSuperAdminUserRole(HttpServletRequest request) {
-    return containsAnyRole(request, TECHNICAL.getValue(), TENANT_ADMIN.getValue());
+  private boolean isSuperAdminUserRole(HttpServletRequest request) {
+    return containsAnyRole(request, TENANT_ADMIN.getValue());
   }
 
   private boolean containsAnyRole(HttpServletRequest request, String... expectedRoles) {

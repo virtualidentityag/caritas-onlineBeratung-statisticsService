@@ -18,6 +18,7 @@ import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Sta
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.User;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.RegistrationMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventRepository;
+import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventTenantAwareRepository;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationStatisticsServiceTest {
@@ -33,13 +35,19 @@ public class RegistrationStatisticsServiceTest {
   RegistrationStatisticsService registrationStatisticsService;
   @Mock
   StatisticsEventRepository statisticsEventRepository;
+
+  @Mock
+  StatisticsEventTenantAwareRepository statisticsEventTenantAwareRepository;
   RegistrationStatisticsDTOConverter registrationStatisticsDTOConverter;
 
   @Before
   public void setup() {
+
     registrationStatisticsDTOConverter = new RegistrationStatisticsDTOConverter();
     registrationStatisticsService = new RegistrationStatisticsService(statisticsEventRepository,
+        statisticsEventTenantAwareRepository,
         registrationStatisticsDTOConverter);
+    ReflectionTestUtils.setField(registrationStatisticsService, "multitenancyEnabled", false);
   }
 
   @Test

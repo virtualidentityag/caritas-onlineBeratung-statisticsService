@@ -35,14 +35,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = StatisticsServiceApplication.class)
 @RunWith(SpringRunner.class)
 @TestPropertySource(properties = "spring.profiles.active=testing")
-public class StatisticsEventRepositoryIT {
+@TestPropertySource(properties = "multitenancy.enabled=true")
+public class StatisticsEventTenantAwareRepositoryIT {
 
   public static final String MONGODB_STATISTICS_EVENTS_JSON_FILENAME =
       "mongodb/StatisticsEvents.json";
-  private final Instant dateFromConverted =
-      OffsetDateTime.of(DATE_FROM, LocalTime.MIN, ZoneOffset.UTC).toInstant();
-  private final Instant dateToConverted =
-      OffsetDateTime.of(DATE_TO, LocalTime.MAX, ZoneOffset.UTC).toInstant();
+
+  @Autowired
+  StatisticsEventTenantAwareRepository statisticsEventTenantAwareRepository;
+
   private final String MONGO_COLLECTION_NAME = "statistics_event";
   @Autowired
   StatisticsEventRepository statisticsEventRepository;
@@ -63,64 +64,10 @@ public class StatisticsEventRepositoryIT {
   }
 
   @Test
-  public void calculateNumberOfAssignedSessionsForUser_Should_ReturnCorrectNumberOfSessions() {
-    assertThat(
-        statisticsEventRepository.calculateNumberOfAssignedSessionsForUser(
-            CONSULTANT_ID, dateFromConverted, dateToConverted),
-        is(3L));
-  }
+  public void getAllRegistrationStatistics_Should_ReturnRegistrationStatisticsFilteredByTenantId() {
 
-  @Test
-  public void calculateNumbersOfSessionsWhereUserWasActive_Should_ReturnNull_WHEN_queryDoesNotMatchAnyResult() {
-    var currentDateTime =
-        OffsetDateTime.of(LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC), ZoneOffset.UTC)
-            .toInstant();
-
-    assertThat(
-        statisticsEventRepository.calculateNumbersOfSessionsWhereUserWasActive(
-            CONSULTANT_ID, currentDateTime, currentDateTime), nullValue());
-  }
-
-  @Test
-  public void calculateNumbersOfSessionsWhereUserWasActive_Should_ReturnCorrectNumberOfSessions() {
-    assertThat(
-        statisticsEventRepository.calculateNumbersOfSessionsWhereUserWasActive(
-            CONSULTANT_ID, dateFromConverted, dateToConverted).getTotalCount(),
-        is(5L));
-  }
-
-  @Test
-  public void calculateNumberOfSentMessagesForUser_Should_ReturnCorrectNumberOfMessages() {
-    assertThat(
-        statisticsEventRepository.calculateNumberOfSentMessagesForUser(
-            CONSULTANT_ID, dateFromConverted, dateToConverted),
-        is(4L));
-  }
-
-  @Test
-  public void calculateTimeInVideoCallsForUser_Should_ReturnCorrectTime() {
-    assertThat(
-        statisticsEventRepository.calculateTimeInVideoCallsForUser(
-            CONSULTANT_ID, dateFromConverted, dateToConverted).getTotal(),
-        is(1800L));
-  }
-
-  @Test
-  public void calculateTimeInVideoCallsForUser_Should_ReturnNull_WHEN_queryDoesNotMatchAnyResult() {
-    var currentDateTime =
-        OffsetDateTime.of(LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC), ZoneOffset.UTC)
-            .toInstant();
-
-    assertThat(
-        statisticsEventRepository.calculateTimeInVideoCallsForUser(
-            CONSULTANT_ID, currentDateTime, currentDateTime), nullValue());
-  }
-
-  @Test
-  public void getAllRegistrationStatistics_Should_ReturnRegistrationStatistics() {
-
-    List<StatisticsEvent> allRegistrationStatistics = statisticsEventRepository.getAllRegistrationStatistics();
-    assertThat(allRegistrationStatistics, hasSize(2));
+    List<StatisticsEvent> allRegistrationStatistics = statisticsEventTenantAwareRepository.getAllRegistrationStatistics(1L);
+    assertThat(allRegistrationStatistics, hasSize(1));
   }
 
 

@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TechnicalTenantResolverTest {
+class AllTenantAccessTenantResolverTest {
   public static final long TECHNICAL_CONTEXT = 0L;
   @Mock
   HttpServletRequest authenticatedRequest;
@@ -32,19 +32,7 @@ class TechnicalTenantResolverTest {
   Access access;
 
   @InjectMocks
-  TechnicalTenantResolver technicalTenantResolver;
-
-  @Test
-  void resolve_should_ResolveTechnicalTenantId_ForTechnicalUserRole() {
-    // given
-    when(authenticatedRequest.getUserPrincipal()).thenReturn(token);
-    when(token.getAccount()
-        .getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
-    when(accessToken.getRealmAccess().getRoles()).thenReturn(Sets.newLinkedHashSet("technical"));
-    var resolved = technicalTenantResolver.resolve(authenticatedRequest);
-    // then
-    assertThat(resolved).contains(TECHNICAL_CONTEXT);
-  }
+  AllTenantAccessTenantResolver allTenantAccessTenantResolver;
 
   @Test
   void resolve_should_ResolveTechnicalTenantId_ForTenantSuperAdminUserRole() {
@@ -53,7 +41,7 @@ class TechnicalTenantResolverTest {
     when(token.getAccount()
         .getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
     when(accessToken.getRealmAccess().getRoles()).thenReturn(Sets.newLinkedHashSet("tenant-admin"));
-    var resolved = technicalTenantResolver.resolve(authenticatedRequest);
+    var resolved = allTenantAccessTenantResolver.resolve(authenticatedRequest);
     // then
     assertThat(resolved).contains(TECHNICAL_CONTEXT);
   }
@@ -65,7 +53,7 @@ class TechnicalTenantResolverTest {
     when(token.getAccount()
         .getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
     when(accessToken.getRealmAccess().getRoles()).thenReturn(Sets.newLinkedHashSet("another-role"));
-    var resolved = technicalTenantResolver.resolve(authenticatedRequest);
+    var resolved = allTenantAccessTenantResolver.resolve(authenticatedRequest);
     // then
     assertThat(resolved).isEmpty();
   }

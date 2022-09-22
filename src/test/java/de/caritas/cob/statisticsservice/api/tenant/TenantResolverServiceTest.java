@@ -44,7 +44,7 @@ class TenantResolverServiceTest {
   private CustomHeaderTenantResolver customHeaderTenantResolver;
 
   @Mock
-  private TechnicalTenantResolver technicalTenantResolver;
+  private AllTenantAccessTenantResolver allTenantAccessTenantResolver;
 
   @AfterEach
   public void tearDown() {
@@ -120,8 +120,8 @@ class TenantResolverServiceTest {
   void resolve_Should_ResolveTenantId_ForTechnicalUserRole() {
     // given
     givenUserIsAuthenticated();
-    when(technicalTenantResolver.canResolve(authenticatedRequest)).thenReturn(true);
-    when(technicalTenantResolver.resolve(authenticatedRequest)).thenReturn(Optional.of(TECHNICAL_CONTEXT));
+    when(allTenantAccessTenantResolver.canResolve(authenticatedRequest)).thenReturn(true);
+    when(allTenantAccessTenantResolver.resolve(authenticatedRequest)).thenReturn(Optional.of(TECHNICAL_CONTEXT));
 
     // when
     Long resolved = tenantResolverService.resolve(authenticatedRequest);

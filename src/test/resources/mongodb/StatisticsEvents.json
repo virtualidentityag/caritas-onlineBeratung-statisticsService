@@ -329,5 +329,51 @@
       "timestampStop": "2021-06-10T15:30:00.00Z",
       "videoCallStatus": "FINISHED"
     }
+  },
+  {
+    "id": "91558abcefg38611119c77ad",
+    "eventType": "REGISTRATION",
+    "sessionId": 633,
+    "timestamp": "2021-06-10T15:00:00.00Z",
+    "consultingType": {
+      "id": 6
+    },
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "agency": {
+      "id": 2
+    },
+    "diocese": null,
+    "metaData": {
+      "tenantId": 2,
+      "registrationDate": "2021-06-10T15:30:00.00Z",
+      "age": 20,
+      "gender": "FEMALE"
+    }
+  },
+  {
+    "id": "01558abcefg38611119c77ad",
+    "eventType": "REGISTRATION",
+    "sessionId": 633,
+    "timestamp": "2021-06-10T15:00:00.00Z",
+    "consultingType": {
+      "id": 6
+    },
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "agency": {
+      "id": 2
+    },
+    "diocese": null,
+    "metaData": {
+      "tenantId": 1,
+      "registrationDate": "2021-06-10T15:30:00.00Z",
+      "age": 20,
+      "gender": "FEMALE"
+    }
   }
 ]

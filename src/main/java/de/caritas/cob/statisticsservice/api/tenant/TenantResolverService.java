@@ -27,7 +27,7 @@ public class TenantResolverService {
   SubdomainTenantResolver subdomainTenantResolver;
 
   @NonNull
-  TechnicalTenantResolver technicalTenantResolver;
+  AllTenantAccessTenantResolver allTenantAccessTenantResolver;
 
   @NonNull
   AccessTokenTenantResolver accessTokenTenantResolver;
@@ -44,7 +44,7 @@ public class TenantResolverService {
   }
 
   private ArrayList<TenantResolver> authenticatedTenantResolvers() {
-    return newArrayList(technicalTenantResolver, accessTokenTenantResolver);
+    return newArrayList(allTenantAccessTenantResolver, accessTokenTenantResolver);
   }
 
   public Long resolve(HttpServletRequest request) {
