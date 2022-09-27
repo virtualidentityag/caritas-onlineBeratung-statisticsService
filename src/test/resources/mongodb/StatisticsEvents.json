@@ -375,5 +375,128 @@
       "age": 20,
       "gender": "FEMALE"
     }
+  },
+  {
+    "id": "632addd8d6c5e6226df2bc23",
+    "eventType": "BOOKING_CREATED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:00:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "type": "Beratung mit Test Consultant",
+      "title": "Beratung Asker mit Test Consultant",
+      "startTime": "2021-05-27T10:00:00.000Z",
+      "endTime": "2021-05-27T11:00:00.000Z",
+      "uid": "mG6irpGfL7cNghqqAuypCz",
+      "bookingId": 1175,
+      "currentBookingId": 1176
+    }
+  },
+  {
+    "id": "632adde5d6c5e6226df2bc55",
+    "eventType": "BOOKING_RESCHEDULED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:10:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "startTime": "2021-05-28T11:00:00.000Z",
+      "endTime": "2021-05-28T12:00:00.000Z",
+      "uid": "7zoBaUcMf5zzZLNaLWfoXz",
+      "bookingId": 1176,
+      "currentBookingId": 1176
+    }
+  },
+  {
+    "id": "632addd8d6c5e6226df2bc38",
+    "eventType": "BOOKING_CREATED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:00:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "type": "Beratung mit Test Consultant",
+      "title": "Beratung Asker mit Test Consultant",
+      "startTime": "2021-05-27T10:00:00.000Z",
+      "endTime": "2021-05-27T11:00:00.000Z",
+      "uid": "mG6irpGfL7cNghqqAuypC1",
+      "bookingId": 1179,
+      "currentBookingId": 1180
+    }
+  },
+  {
+    "id": "632adde5d6c5e6226df2bc39",
+    "eventType": "BOOKING_RESCHEDULED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:10:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "startTime": "2021-05-28T11:00:00.000Z",
+      "endTime": "2021-05-28T12:00:00.000Z",
+      "uid": "7zoBaUcMf5zzZLNaLWfoXo",
+      "bookingId": 1180,
+      "currentBookingId": 1180
+    }
+  },
+  {
+    "id": "632addf0d6c5e6226df2bc3a",
+    "eventType": "BOOKING_CANCELLED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:20:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "uid": "7zoBaUcMf5zzZLNaLWfoXo",
+      "bookingId": 1180,
+      "currentBookingId": 1180
+    }
+  },
+  {
+    "id": "632addd8d6c5e6226df2bc32",
+    "eventType": "BOOKING_CREATED",
+    "sessionId": 633,
+    "timestamp": "2021-06-10T15:00:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "type": "Beratung mit Test Consultant",
+      "title": "Beratung Asker mit Test Consultant",
+      "startTime": "2021-06-27T10:00:00.000Z",
+      "endTime": "2021-06-27T11:00:00.000Z",
+      "uid": "mG6irpGfL7cNghqqAuypC2",
+      "bookingId": 1181,
+      "currentBookingId": 1182
+    }
+  },
+  {
+    "id": "632adde5d6c5e6226df2bc36",
+    "eventType": "BOOKING_RESCHEDULED",
+    "sessionId": 633,
+    "timestamp": "2021-05-10T15:10:00.000Z",
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "metaData": {
+      "startTime": "2021-06-28T11:00:00.000Z",
+      "endTime": "2021-06-28T12:00:00.000Z",
+      "uid": "7zoBaUcMf5zzZLNaLWfoXb",
+      "bookingId": 1182,
+      "currentBookingId": 1182
+    }
   }
 ]

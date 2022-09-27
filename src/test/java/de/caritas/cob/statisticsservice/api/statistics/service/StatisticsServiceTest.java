@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,6 +63,8 @@ public class StatisticsServiceTest {
             dateToConverted);
     verify(statisticsEventRepository, times(1))
         .calculateTimeInVideoCallsForUser(CONSULTANT_ID, dateFromConverted, dateToConverted);
+    verify(statisticsEventRepository, times(1))
+        .calculateNumbersOfDoneAppointments(eq(CONSULTANT_ID), eq(dateFromConverted), eq(dateToConverted), any(Instant.class));
   }
 
   @Test
@@ -75,6 +78,8 @@ public class StatisticsServiceTest {
         any(), any())).thenReturn(200L);
     when(this.statisticsEventRepository.calculateTimeInVideoCallsForUser(anyString(),
         any(), any())).thenReturn(new Duration(6600L));
+    when(this.statisticsEventRepository.calculateNumbersOfDoneAppointments(anyString(),
+        any(), any(), any())).thenReturn(new Count(5000L));
 
     var result = statisticsService.fetchStatisticsData(DATE_FROM, DATE_TO);
 
@@ -82,6 +87,7 @@ public class StatisticsServiceTest {
     assertThat(result.getNumberOfSentMessages(), is(200L));
     assertThat(result.getNumberOfSessionsWhereConsultantWasActive(), is(2000L));
     assertThat(result.getVideoCallDuration(), is(6600L));
+    assertThat(result.getNumberOfAppointments(), is(5000L));
   }
 
   @Test
@@ -96,6 +102,8 @@ public class StatisticsServiceTest {
         any(), any())).thenReturn(0L);
     when(this.statisticsEventRepository.calculateTimeInVideoCallsForUser(anyString(),
         any(), any())).thenReturn(null);
+    when(this.statisticsEventRepository.calculateNumbersOfDoneAppointments(anyString(),
+        any(), any(), any())).thenReturn(new Count(0));
 
     var result = statisticsService
         .fetchStatisticsData(dateWithoutStatistics, dateWithoutStatistics);
@@ -104,6 +112,6 @@ public class StatisticsServiceTest {
     assertThat(result.getNumberOfSentMessages(), is(0L));
     assertThat(result.getNumberOfSessionsWhereConsultantWasActive(), is(0L));
     assertThat(result.getVideoCallDuration(), is(0L));
+    assertThat(result.getNumberOfAppointments(), is(0L));
   }
-
 }
