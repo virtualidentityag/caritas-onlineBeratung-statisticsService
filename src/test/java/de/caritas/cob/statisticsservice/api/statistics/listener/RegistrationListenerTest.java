@@ -5,10 +5,9 @@ import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.ASKE
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTING_TYPE_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.RC_GROUP_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESSION_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.TENANT_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,21 +38,24 @@ public class RegistrationListenerTest {
   MongoTemplate mongoTemplate;
   @Mock
   UserStatisticsService userStatisticsService;
+  @Captor
+  ArgumentCaptor<StatisticsEvent> statisticsEventCaptor;
 
   @Test
   public void registration_Should_saveEventToMongoDb() {
-
+    // given
     SessionStatisticsResultDTO sessionStatisticsResultDTO = buildResultDto();
     when(userStatisticsService.retrieveSessionViaSessionId(SESSION_ID))
         .thenReturn(sessionStatisticsResultDTO);
 
     RegistrationStatisticsEventMessage registrationStatisticsEventMessage = buildEventMessage();
-    registrationListener.receiveMessage(registrationStatisticsEventMessage);
-    verify(mongoTemplate, times(1)).insert(any(StatisticsEvent.class));
 
-    ArgumentCaptor<StatisticsEvent> statisticsEventCaptor = ArgumentCaptor.forClass(
-        StatisticsEvent.class);
+    // when
+    registrationListener.receiveMessage(registrationStatisticsEventMessage);
+
+    // then
     verify(mongoTemplate).insert(statisticsEventCaptor.capture());
+
     StatisticsEvent statisticsEvent = statisticsEventCaptor.getValue();
     assertThat(statisticsEvent.getEventType(),
         is(registrationStatisticsEventMessage.getEventType()));
@@ -80,6 +83,7 @@ public class RegistrationListenerTest {
 
   private RegistrationStatisticsEventMessage buildEventMessage() {
     return new RegistrationStatisticsEventMessage()
+        .tenantId(TENANT_ID)
         .sessionId(SESSION_ID)
         .eventType(EventType.CREATE_MESSAGE)
         .userId(ASKER_ID)
@@ -97,6 +101,7 @@ public class RegistrationListenerTest {
 
   private RegistrationMetaData buildMetaData(RegistrationStatisticsEventMessage eventMessage) {
     return RegistrationMetaData.builder()
+        .tenantId(TENANT_ID)
         .registrationDate(eventMessage.getRegistrationDate())
         .age(eventMessage.getAge())
         .gender(eventMessage.getGender())

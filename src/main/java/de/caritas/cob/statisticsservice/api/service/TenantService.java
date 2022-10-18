@@ -1,5 +1,6 @@
 package de.caritas.cob.statisticsservice.api.service;
 
+import de.caritas.cob.statisticsservice.config.apiclient.TenantServiceApiControllerFactory;
 import de.caritas.cob.statisticsservice.config.cache.CacheManagerConfig;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +13,13 @@ import de.caritas.cob.statisticsservice.tenantservice.generated.web.model.Restri
 @RequiredArgsConstructor
 public class TenantService {
 
-  private final @NonNull TenantControllerApi tenantControllerApi;
+  private final @NonNull TenantServiceApiControllerFactory tenantServiceApiControllerFactory;
 
   @Cacheable(cacheNames = CacheManagerConfig.TENANT_CACHE, key = "#subdomain")
   public RestrictedTenantDTO getRestrictedTenantDataBySubdomain(String subdomain) {
-    return tenantControllerApi.getRestrictedTenantDataBySubdomainWithHttpInfo(subdomain).getBody();
+    return tenantServiceApiControllerFactory
+            .createControllerApi()
+            .getRestrictedTenantDataBySubdomainWithHttpInfo(subdomain).getBody();
   }
 
 }

@@ -44,6 +44,7 @@ public class RabbitMqConfig {
 
   public static final String STATISTICS_EXCHANGE_NAME = "statistics.topic";
   public static final String QUEUE_NAME_ASSIGN_SESSION = QUEUE_PREFIX + EventType.ASSIGN_SESSION;
+  public static final String QUEUE_NAME_ARCHIVE_SESSION = QUEUE_PREFIX + EventType.ARCHIVE_SESSION;
   public static final String QUEUE_NAME_CREATE_MESSAGE = QUEUE_PREFIX + EventType.CREATE_MESSAGE;
   public static final String QUEUE_NAME_START_VIDEO_CALL = QUEUE_PREFIX + EventType.START_VIDEO_CALL;
   public static final String QUEUE_NAME_STOP_VIDEO_CALL = QUEUE_PREFIX + EventType.STOP_VIDEO_CALL;
@@ -66,6 +67,7 @@ public class RabbitMqConfig {
 
     var deadLetterQueue = buildDeadLetterQueue();
     var assignSessionStatisticsEventQueue = buildQueue(QUEUE_NAME_ASSIGN_SESSION);
+    var archiveSessionStatisticsEventQueue = buildQueue(QUEUE_NAME_ARCHIVE_SESSION);
     var createMessageStatisticsEventQueue = buildQueue(QUEUE_NAME_CREATE_MESSAGE);
     var startVideoCallStatisticsEventQueue = buildQueue(QUEUE_NAME_START_VIDEO_CALL);
     var stopVideoCallStatisticsEventQueue = buildQueue(QUEUE_NAME_STOP_VIDEO_CALL);
@@ -86,6 +88,10 @@ public class RabbitMqConfig {
         BindingBuilder.bind(assignSessionStatisticsEventQueue)
             .to(topicExchange)
             .with(EventType.ASSIGN_SESSION),
+        archiveSessionStatisticsEventQueue,
+        BindingBuilder.bind(archiveSessionStatisticsEventQueue)
+            .to(topicExchange)
+            .with(EventType.ARCHIVE_SESSION),
         createMessageStatisticsEventQueue,
         BindingBuilder.bind(createMessageStatisticsEventQueue)
             .to(topicExchange)

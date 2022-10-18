@@ -8,8 +8,6 @@ import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESS
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +21,7 @@ import java.time.OffsetDateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -35,20 +34,23 @@ public class AssignSessionListenerTest {
   AssignSessionListener assignSessionListener;
   @Mock MongoTemplate mongoTemplate;
   @Mock UserStatisticsService userStatisticsService;
+  @Captor ArgumentCaptor<StatisticsEvent> statisticsEventCaptor;
 
   @Test
   public void receiveMessage_Should_saveEventToMongoDb() {
-
+    // given
     SessionStatisticsResultDTO sessionStatisticsResultDTO = buildResultDto();
     when(userStatisticsService.retrieveSessionViaSessionId(SESSION_ID))
         .thenReturn(sessionStatisticsResultDTO);
 
     AssignSessionStatisticsEventMessage assignSessionStatisticsEventMessage = buildEventMessage();
-    assignSessionListener.receiveMessage(assignSessionStatisticsEventMessage);
-    verify(mongoTemplate, times(1)).insert(any(StatisticsEvent.class));
 
-    ArgumentCaptor<StatisticsEvent> statisticsEventCaptor = ArgumentCaptor.forClass(StatisticsEvent.class);
+    // when
+    assignSessionListener.receiveMessage(assignSessionStatisticsEventMessage);
+
+    // then
     verify(mongoTemplate).insert(statisticsEventCaptor.capture());
+
     StatisticsEvent statisticsEvent = statisticsEventCaptor.getValue();
     assertThat(statisticsEvent.getEventType(), is(assignSessionStatisticsEventMessage.getEventType()));
     assertThat(statisticsEvent.getSessionId(), is(sessionStatisticsResultDTO.getId()));

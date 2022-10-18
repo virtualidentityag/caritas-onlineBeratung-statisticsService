@@ -5,22 +5,20 @@ import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONS
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTING_TYPE_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.RC_GROUP_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESSION_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.TENANT_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.caritas.cob.statisticsservice.api.model.ArchiveSessionStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.model.EventType;
-import de.caritas.cob.statisticsservice.api.model.StartVideoCallStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.model.UserRole;
 import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
-import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.StartVideoCallMetaData;
-import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.VideoCallStatus;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -31,10 +29,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-public class StartVideoCallListenerTest {
+public class ArchiveSessionListenerTest {
 
   @InjectMocks
-  StartVideoCallListener startVideoCallListener;
+  ArchiveSessionListener archiveSessionListener;
   @Mock
   MongoTemplate mongoTemplate;
   @Mock
@@ -49,33 +47,24 @@ public class StartVideoCallListenerTest {
     when(userStatisticsService.retrieveSessionViaSessionId(SESSION_ID))
         .thenReturn(sessionStatisticsResultDTO);
 
-    StartVideoCallStatisticsEventMessage startVideoCallStatisticsEventMessage = buildEventMessage();
+    OffsetDateTime timestamp = OffsetDateTime.now();
+    ArchiveSessionStatisticsEventMessage archiveSessionStatisticsEventMessage = buildEventMessage(timestamp);
 
     // when
-    startVideoCallListener.receiveMessage(startVideoCallStatisticsEventMessage);
+    archiveSessionListener.receiveMessage(archiveSessionStatisticsEventMessage);
 
+    // then
     verify(mongoTemplate).insert(statisticsEventCaptor.capture());
 
     StatisticsEvent statisticsEvent = statisticsEventCaptor.getValue();
-    assertThat(
-        statisticsEvent.getEventType(), is(startVideoCallStatisticsEventMessage.getEventType()));
-    assertThat(statisticsEvent.getSessionId(), is(sessionStatisticsResultDTO.getId()));
-    assertThat(
-        statisticsEvent.getConsultingType().getId(),
-        is(sessionStatisticsResultDTO.getConsultingType()));
-    assertThat(statisticsEvent.getAgency().getId(), is(sessionStatisticsResultDTO.getAgencyId()));
-    assertThat(
-        statisticsEvent.getTimestamp(),
-        is(
-            startVideoCallStatisticsEventMessage
-                .getTimestamp()
-                .truncatedTo(ChronoUnit.SECONDS)
-                .toInstant()));
-    assertThat(
-        statisticsEvent.getUser().getId(), is(startVideoCallStatisticsEventMessage.getUserId()));
+    assertThat(statisticsEvent.getEventType(), is(EventType.ARCHIVE_SESSION));
+    assertThat(statisticsEvent.getSessionId(), is(SESSION_ID));
+    assertThat(statisticsEvent.getConsultingType().getId(), is(CONSULTING_TYPE_ID));
+    assertThat(statisticsEvent.getAgency().getId(), is(AGENCY_ID));
+    assertThat(statisticsEvent.getTimestamp(), is(timestamp.toInstant()));
+    assertThat(statisticsEvent.getUser().getId(), is(CONSULTANT_ID));
     assertThat(statisticsEvent.getUser().getUserRole(), is(UserRole.CONSULTANT));
-    assertThat(
-        statisticsEvent.getMetaData(), is(buildMetaData(startVideoCallStatisticsEventMessage)));
+    assertThat(statisticsEvent.getMetaData(), is(buildMetaData()));
   }
 
   private SessionStatisticsResultDTO buildResultDto() {
@@ -87,22 +76,21 @@ public class StartVideoCallListenerTest {
         .rcGroupId(RC_GROUP_ID);
   }
 
-  private StartVideoCallStatisticsEventMessage buildEventMessage() {
-    return new StartVideoCallStatisticsEventMessage()
+  private ArchiveSessionStatisticsEventMessage buildEventMessage(OffsetDateTime timestamp) {
+    return new ArchiveSessionStatisticsEventMessage()
         .sessionId(SESSION_ID)
-        .eventType(EventType.CREATE_MESSAGE)
+        .tenantId(TENANT_ID)
+        .eventType(EventType.ARCHIVE_SESSION)
         .userId(CONSULTANT_ID)
         .userRole(UserRole.CONSULTANT)
-        .timestamp(OffsetDateTime.now())
-        .videoCallUuid(VIDEO_CALL_UUID);
+        .timestamp(timestamp)
+        .endDate("2022-10-14T10:43:29");
   }
 
-  private StartVideoCallMetaData buildMetaData(StartVideoCallStatisticsEventMessage eventMessage) {
-    return StartVideoCallMetaData.builder()
-        .videoCallUuid(eventMessage.getVideoCallUuid())
-        .duration(0)
-        .timestampStop(null)
-        .status(VideoCallStatus.ONGOING)
+  private ArchiveMetaData buildMetaData() {
+    return ArchiveMetaData.builder()
+        .endDate("2022-10-14T10:43:29")
+        .tenantId(TENANT_ID)
         .build();
   }
 }
