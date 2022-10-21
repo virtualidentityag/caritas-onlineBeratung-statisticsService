@@ -82,6 +82,9 @@ public interface StatisticsEventRepository extends MongoRepository<StatisticsEve
   @Query(value = "{'eventType': 'REGISTRATION'}")
   List<StatisticsEvent> getAllRegistrationStatistics();
 
+  @Query(value = "{'eventType': 'ARCHIVE_SESSION'}")
+  List<StatisticsEvent> getAllArchiveSessionEvents();
+
   /**
    * Calculate the number of done appointments.
    * Done mean that the endTime of the appointment or the endTime of the latest reschedule has been reached, and it was not canceled

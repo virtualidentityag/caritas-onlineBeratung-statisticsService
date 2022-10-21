@@ -356,7 +356,7 @@
   {
     "id": "01558abcefg38611119c77ad",
     "eventType": "REGISTRATION",
-    "sessionId": 633,
+    "sessionId": 634,
     "timestamp": "2021-06-10T15:00:00.00Z",
     "consultingType": {
       "id": 6
@@ -497,6 +497,69 @@
       "uid": "7zoBaUcMf5zzZLNaLWfoXb",
       "bookingId": 1182,
       "currentBookingId": 1182
+    }
+  },
+  {
+    "id": "634cfd3a536cc0646377a17b",
+    "eventType": "ARCHIVE_SESSION",
+    "sessionId": 633,
+    "timestamp": "2022-10-17T10:00:00.00Z",
+    "consultingType": {
+      "id": 6
+    },
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "agency": {
+      "id": 2
+    },
+    "diocese": null,
+    "metaData": {
+      "tenantId": 1,
+      "endDate": "2022-10-17T10:00:00.00Z"
+    }
+  },
+  {
+    "id": "6350071a491c23f0fb11b8e4",
+    "eventType": "ARCHIVE_SESSION",
+    "sessionId": 633,
+    "timestamp": "2022-10-18T10:00:00.00Z",
+    "consultingType": {
+      "id": 6
+    },
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "agency": {
+      "id": 2
+    },
+    "diocese": null,
+    "metaData": {
+      "tenantId": 1,
+      "endDate": "2022-10-18T10:00:00.00Z"
+    }
+  },
+  {
+    "id": "634cfed4efe56e57e5bc476b",
+    "eventType": "ARCHIVE_SESSION",
+    "sessionId": 634,
+    "timestamp": "2022-10-19T10:00:00.00Z",
+    "consultingType": {
+      "id": 6
+    },
+    "user": {
+      "id": "d63f4cc0-215d-40e2-a866-2d3e910f0590",
+      "userRole": "CONSULTANT"
+    },
+    "agency": {
+      "id": 2
+    },
+    "diocese": null,
+    "metaData": {
+      "tenantId": 2,
+      "endDate": "2022-10-19T10:00:00.00Z"
     }
   }
 ]

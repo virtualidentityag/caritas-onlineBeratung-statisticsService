@@ -295,6 +295,9 @@ components:
         registrationDate:
           type: string
           example: '2022-08-15T21:11:29'
+        endDate:
+          type: string
+          example: '2022-10-14T17:28:29'
         age:
           type: integer
           example: '25'

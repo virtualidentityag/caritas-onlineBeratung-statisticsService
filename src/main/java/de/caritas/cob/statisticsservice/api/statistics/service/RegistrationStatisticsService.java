@@ -35,38 +35,56 @@ public class RegistrationStatisticsService {
   }
 
   private RegistrationStatisticsListResponseDTO buildResponseDTO() {
+    List<StatisticsEvent> archiveSessionEvents = getArchiveSessionEvents();
+
     RegistrationStatisticsListResponseDTO registrationStatisticsList = new RegistrationStatisticsListResponseDTO();
-    List<StatisticsEvent> registrationStatisticsRaw = getAllRegistrationStatistics();
-    for (StatisticsEvent rawEvent : registrationStatisticsRaw) {
-      registrationStatisticsList.addRegistrationStatisticsItem(
-          registrationStatisticsDTOConverter.convertStatisticsEvent(rawEvent));
-    }
+    getRegistrationStatistics()
+        .stream()
+        .map(rawEvent -> registrationStatisticsDTOConverter.convertStatisticsEvent(rawEvent, archiveSessionEvents))
+        .forEach(registrationStatisticsList::addRegistrationStatisticsItem);
+
     return registrationStatisticsList;
   }
 
-  private List<StatisticsEvent> getAllRegistrationStatistics() {
+  private List<StatisticsEvent> getRegistrationStatistics() {
     if (isAllTenantAccessContext()) {
-      return getAllRegistrationStatisticsForAllTenants();
+      return getRegistrationStatisticsForAllTenants();
     } else {
       return getRegistrationStatisticsForCurrentTenant();
     }
   }
 
+  private List<StatisticsEvent> getArchiveSessionEvents() {
+    if (isAllTenantAccessContext()) {
+      return getArchiveSessionEventsForAllTenants();
+    } else {
+      return getArchiveSessionEventsForCurrentTenant();
+    }
+  }
+
   private List<StatisticsEvent> getRegistrationStatisticsForCurrentTenant() {
-    log.info("Gathering registration statistics for tenant : ", TenantContext.getCurrentTenant());
+    log.info("Gathering registration statistics for tenant with id {}", TenantContext.getCurrentTenant());
     return statisticsEventTenantAwareRepository.getAllRegistrationStatistics(
         TenantContext.getCurrentTenant());
   }
 
-  private List<StatisticsEvent> getAllRegistrationStatisticsForAllTenants() {
+  private List<StatisticsEvent> getRegistrationStatisticsForAllTenants() {
     log.info("Gathering registration statistics for all tenants");
     return statisticsEventRepository.getAllRegistrationStatistics();
   }
 
+  private List<StatisticsEvent> getArchiveSessionEventsForAllTenants() {
+    log.info("Gathering archive sessions events for all tenants");
+    return statisticsEventRepository.getAllArchiveSessionEvents();
+  }
+
+  private List<StatisticsEvent> getArchiveSessionEventsForCurrentTenant() {
+    log.info("Gathering archive session events for tenant with id {}", TenantContext.getCurrentTenant());
+    return statisticsEventTenantAwareRepository.getAllArchiveSessionEvents(TenantContext.getCurrentTenant());
+  }
+
   private boolean isAllTenantAccessContext() {
     return multitenancyIsDisabled() || TECHNICAL_TENANT_ID.equals(TenantContext.getCurrentTenant());
-
-
   }
 
   private boolean multitenancyIsDisabled() {

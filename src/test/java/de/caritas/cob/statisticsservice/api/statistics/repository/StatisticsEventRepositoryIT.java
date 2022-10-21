@@ -133,6 +133,12 @@ public class StatisticsEventRepositoryIT {
   }
 
   @Test
+  public void getAllArchiveSessionEvents_Should_ReturnArchiveSessionEvents() {
+    List<StatisticsEvent> allArchiveSessionEvents = statisticsEventRepository.getAllArchiveSessionEvents();
+    assertThat(allArchiveSessionEvents, hasSize(3));
+  }
+
+  @Test
   @Ignore("For some reason this test is failing in this test scenario caused by the event.0.startTime and event.0.endTime filters.")
   public void calculateNumberOfDoneAppointmentsForConsultant_Should_ReturnCorrectNumberOfAppointments() {
     Count count = statisticsEventRepository.calculateNumbersOfDoneAppointments(CONSULTANT_ID,

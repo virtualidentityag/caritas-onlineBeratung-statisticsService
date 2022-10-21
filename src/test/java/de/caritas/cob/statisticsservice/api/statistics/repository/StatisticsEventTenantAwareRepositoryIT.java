@@ -1,12 +1,7 @@
 package de.caritas.cob.statisticsservice.api.statistics.repository;
 
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTANT_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.DATE_FROM;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.DATE_TO;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,11 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.caritas.cob.statisticsservice.StatisticsServiceApplication;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,5 +60,9 @@ public class StatisticsEventTenantAwareRepositoryIT {
     assertThat(allRegistrationStatistics, hasSize(1));
   }
 
-
+  @Test
+  public void getAllArchiveSessionEvents_Should_ReturnArchiveSessionEventsFilteredByTenantId() {
+    List<StatisticsEvent> allArchiveSessionEvents = statisticsEventTenantAwareRepository.getAllArchiveSessionEvents(1L);
+    assertThat(allArchiveSessionEvents, hasSize(2));
+  }
 }
