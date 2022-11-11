@@ -22,14 +22,12 @@ import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Provides the SpringFox (API documentation generation) configuration.
  *
  */
 @Configuration
-@EnableSwagger2
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig {
 

@@ -37,7 +37,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   public static final String[] WHITE_LIST =
       new String[]{"/statistics/docs", "/statistics/docs/**", "/v2/api-docs", "/configuration/ui",
-          "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**"};
+          "/swagger-resources/**", "/configuration/security", "/swagger-ui", "/swagger-ui/**", "/webjars/**"};
 
   @SuppressWarnings("unused")
   private final KeycloakClientRequestFactory keycloakClientRequestFactory;
