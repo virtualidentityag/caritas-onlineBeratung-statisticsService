@@ -306,6 +306,31 @@
               </modelPackage>
             </configuration>
           </execution>
+          <execution>
+            <id>consultingtype-service-client-model</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <configOptions>
+                <sourceFolder>/</sourceFolder>
+                <library>resttemplate</library>
+                <dateLibrary>java8</dateLibrary>
+              </configOptions>
+              <inputSpec>${project.basedir}/services/applicationsettingsservice.yml</inputSpec>
+              <generatorName>java</generatorName>
+              <generateApis>true</generateApis>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
+              <apiPackage>
+                ${project.groupId}.${project.artifactId}.applicationsettingsservice.generated.web
+              </apiPackage>
+              <modelPackage>
+                ${project.groupId}.${project.artifactId}.applicationsettingsservice.generated.web.model
+              </modelPackage>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <!-- Code style check -->
