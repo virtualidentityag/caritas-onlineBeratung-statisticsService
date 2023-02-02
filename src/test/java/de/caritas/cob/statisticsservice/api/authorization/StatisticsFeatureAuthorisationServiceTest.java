@@ -8,7 +8,7 @@ import de.caritas.cob.statisticsservice.api.service.ApplicationSettingsService;
 import de.caritas.cob.statisticsservice.api.service.TenantService;
 import de.caritas.cob.statisticsservice.api.tenant.TenantContext;
 import de.caritas.cob.statisticsservice.applicationsettingsservice.generated.web.model.ApplicationSettingsDTO;
-import de.caritas.cob.statisticsservice.applicationsettingsservice.generated.web.model.SettingDTO;
+import de.caritas.cob.statisticsservice.applicationsettingsservice.generated.web.model.ApplicationSettingsDTOMainTenantSubdomainForSingleDomainMultitenancy;
 import de.caritas.cob.statisticsservice.tenantservice.generated.web.model.RestrictedTenantDTO;
 import de.caritas.cob.statisticsservice.tenantservice.generated.web.model.Settings;
 
@@ -59,7 +59,8 @@ class StatisticsFeatureAuthorisationServiceTest {
     // given
     TenantContext.setCurrentTenant(1L);
     givenTenantSettingStatisticsFeatureEnabledForSingleDomain(true);
-    when(applicationSettingsService.getApplicationSettings()).thenReturn(new ApplicationSettingsDTO().mainTenantSubdomainForSingleDomainMultitenancy(new SettingDTO().value("app")));
+    when(applicationSettingsService.getApplicationSettings()).thenReturn(new ApplicationSettingsDTO()
+        .mainTenantSubdomainForSingleDomainMultitenancy(new ApplicationSettingsDTOMainTenantSubdomainForSingleDomainMultitenancy().value("app")));
     ReflectionTestUtils.setField(statisticsFeatureAuthorisationService, "multitenancy", false);
     ReflectionTestUtils.setField(statisticsFeatureAuthorisationService, "multitenancyWithSingleDomainEnabled", true);
     // when
@@ -73,7 +74,8 @@ class StatisticsFeatureAuthorisationServiceTest {
     // given
     TenantContext.setCurrentTenant(1L);
     givenTenantSettingStatisticsFeatureEnabledForSingleDomain(false);
-    when(applicationSettingsService.getApplicationSettings()).thenReturn(new ApplicationSettingsDTO().mainTenantSubdomainForSingleDomainMultitenancy(new SettingDTO().value("app")));
+    when(applicationSettingsService.getApplicationSettings()).thenReturn(new ApplicationSettingsDTO()
+        .mainTenantSubdomainForSingleDomainMultitenancy(new ApplicationSettingsDTOMainTenantSubdomainForSingleDomainMultitenancy().value("app")));
     ReflectionTestUtils.setField(statisticsFeatureAuthorisationService, "multitenancy", false);
     ReflectionTestUtils.setField(statisticsFeatureAuthorisationService, "multitenancyWithSingleDomainEnabled", true);
     // when, then
