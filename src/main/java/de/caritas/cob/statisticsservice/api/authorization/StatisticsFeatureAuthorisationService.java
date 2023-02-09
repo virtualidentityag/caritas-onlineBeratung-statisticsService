@@ -3,7 +3,10 @@ package de.caritas.cob.statisticsservice.api.authorization;
 import de.caritas.cob.statisticsservice.api.exception.httpresponses.StatisticsDisabledException;
 import de.caritas.cob.statisticsservice.api.service.ApplicationSettingsService;
 import de.caritas.cob.statisticsservice.api.service.TenantService;
+import de.caritas.cob.statisticsservice.api.tenant.SubdomainExtractor;
+import de.caritas.cob.statisticsservice.api.tenant.SubdomainTenantResolver;
 import de.caritas.cob.statisticsservice.api.tenant.TenantContext;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,8 @@ public class StatisticsFeatureAuthorisationService {
   private boolean multitenancyWithSingleDomainEnabled;
 
   private final @NonNull TenantService tenantService;
+
+  private final @NonNull SubdomainExtractor subdomainExtractor;
 
   private final @NonNull ApplicationSettingsService applicationSettingsService;
 
@@ -59,8 +64,9 @@ public class StatisticsFeatureAuthorisationService {
   }
 
   private boolean isStatisticsFeatureEnabledForMultitenancy() {
-    Long currentTenant = TenantContext.getCurrentTenant();
-    RestrictedTenantDTO restrictedTenantData = tenantService.getRestrictedTenantDataNonCached(currentTenant);
+    Optional<String> currentSubdomain = subdomainExtractor.getCurrentSubdomain();
+    RestrictedTenantDTO restrictedTenantData = currentSubdomain.isPresent() ? tenantService.getRestrictedTenantDataBySubdomainNonCached(
+          currentSubdomain.get()) : tenantService.getRestrictedTenantDataNonCached(TenantContext.getCurrentTenant());
     return isStatisticsFeatureEnabled(restrictedTenantData);
   }
 
