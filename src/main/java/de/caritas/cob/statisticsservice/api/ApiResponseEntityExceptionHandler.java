@@ -5,6 +5,7 @@ import de.caritas.cob.statisticsservice.api.exception.KeycloakException;
 import de.caritas.cob.statisticsservice.api.exception.httpresponses.BadRequestException;
 import de.caritas.cob.statisticsservice.api.exception.httpresponses.InternalServerErrorException;
 import de.caritas.cob.statisticsservice.api.exception.httpresponses.NotFoundException;
+import de.caritas.cob.statisticsservice.api.exception.httpresponses.StatisticsDisabledException;
 import de.caritas.cob.statisticsservice.api.service.LogService;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -50,6 +51,14 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     LogService.logWarning(ex);
 
     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({StatisticsDisabledException.class})
+  public ResponseEntity<Object> handleFeatureDisabledException(
+      final BadRequestException ex, final WebRequest request) {
+    LogService.logWarning(ex);
+
+    return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
   }
 
   /**

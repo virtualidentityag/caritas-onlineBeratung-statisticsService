@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.caritas.cob.statisticsservice.StatisticsServiceApplication;
 import de.caritas.cob.statisticsservice.api.authorization.RoleAuthorizationAuthorityMapper;
+import de.caritas.cob.statisticsservice.api.authorization.StatisticsFeatureAuthorisationService;
 import de.caritas.cob.statisticsservice.api.service.LogService;
 import de.caritas.cob.statisticsservice.api.statistics.service.RegistrationStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.service.StatisticsService;
@@ -55,6 +56,9 @@ public class StatisticsControllerIT {
 
   @MockBean
   RegistrationStatisticsService registrationStatisticsService;
+
+  @MockBean
+  StatisticsFeatureAuthorisationService statisticsFeatureAuthorisationService;
 
   @Mock
   private Logger logger;
