@@ -51,6 +51,7 @@ class StatisticsFeatureAuthorisationServiceTest {
     verify(tenantService).getRestrictedTenantDataNonCached(1L);
   }
 
+
   @Test
   public void assertStatisticsFeatureIsEnabled_ShouldThrowException_WhenFeatureIsEnabledAndMultitenanancyOn() {
     // given
