@@ -52,6 +52,7 @@ class StatisticsFeatureAuthorisationServiceTest {
   }
 
 
+
   @Test
   public void assertStatisticsFeatureIsEnabled_ShouldThrowException_WhenFeatureIsEnabledAndMultitenanancyOn() {
     // given
