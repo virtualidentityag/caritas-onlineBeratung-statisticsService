@@ -1,5 +1,6 @@
 package de.caritas.cob.statisticsservice.api.controller;
 
+import de.caritas.cob.statisticsservice.api.authorization.StatisticsFeatureAuthorisationService;
 import de.caritas.cob.statisticsservice.api.model.ConsultantStatisticsResponseDTO;
 import de.caritas.cob.statisticsservice.api.model.RegistrationStatisticsListResponseDTO;
 import de.caritas.cob.statisticsservice.api.statistics.service.RegistrationStatisticsService;
@@ -24,6 +25,8 @@ public class StatisticsController implements StatisticsApi {
 
   private final @NonNull RegistrationStatisticsService registrationStatisticsService;
 
+  private final @NonNull StatisticsFeatureAuthorisationService statisticsFeatureAuthorisationService;
+
   /**
    * Returns statistical data for a consultant.
    *
@@ -34,6 +37,7 @@ public class StatisticsController implements StatisticsApi {
   @Override
   public ResponseEntity<ConsultantStatisticsResponseDTO> getConsultantStatistics(
       @RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+    statisticsFeatureAuthorisationService.assertStatisticsFeatureIsEnabled();
     return new ResponseEntity<>(
         statisticsService.fetchStatisticsData(startDate, endDate),
         HttpStatus.OK);
@@ -41,6 +45,7 @@ public class StatisticsController implements StatisticsApi {
 
   @Override
   public ResponseEntity<RegistrationStatisticsListResponseDTO> getRegistrationStatistics() {
+    statisticsFeatureAuthorisationService.assertStatisticsFeatureIsEnabled();
     return new ResponseEntity<>(
         registrationStatisticsService.fetchRegistrationStatisticsData(),
         HttpStatus.OK);

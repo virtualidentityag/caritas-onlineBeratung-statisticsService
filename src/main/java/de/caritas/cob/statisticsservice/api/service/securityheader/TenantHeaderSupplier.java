@@ -2,6 +2,7 @@ package de.caritas.cob.statisticsservice.api.service.securityheader;
 
 import static java.lang.Boolean.TRUE;
 
+import de.caritas.cob.statisticsservice.api.tenant.TenantContext;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,17 @@ public class TenantHeaderSupplier {
   public void addTechnicalTenantHeaderIfMultitenancyEnabled(HttpHeaders headers) {
     if (TRUE.equals(multitenancy)) {
       headers.add("tenantId", TECHNICAL_TENANT_CONTEXT);
+    }
+  }
+
+  public void addTenantHeader(HttpHeaders headers) {
+    if (multitenancy) {
+      if (TenantContext.getCurrentTenant() != null) {
+        headers.add("tenantId", TenantContext.getCurrentTenant().toString());
+      } else {
+        log.warn(
+            "Not setting tenantId header, because tenant context was not set. It's okay only for non-auth user context.'");
+      }
     }
   }
 
