@@ -1,16 +1,5 @@
 package de.caritas.cob.statisticsservice.api.statistics.listener;
 
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.AGENCY_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTANT_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTING_TYPE_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.RC_GROUP_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESSION_ID;
-import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import de.caritas.cob.statisticsservice.api.model.EventType;
 import de.caritas.cob.statisticsservice.api.model.StartVideoCallStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.model.UserRole;
@@ -19,8 +8,6 @@ import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Sta
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.StartVideoCallMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.VideoCallStatus;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +16,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.AGENCY_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTANT_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTING_TYPE_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.RC_GROUP_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESSION_ID;
+import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 public class StartVideoCallListenerTest {
@@ -43,13 +45,13 @@ public class StartVideoCallListenerTest {
   ArgumentCaptor<StatisticsEvent> statisticsEventCaptor;
 
   @Test
-  public void receiveMessage_Should_saveEventToMongoDb() {
+  public void receiveMessage_Should_saveEventWithSessionToMongoDb() {
     // given
     SessionStatisticsResultDTO sessionStatisticsResultDTO = buildResultDto();
     when(userStatisticsService.retrieveSessionViaSessionId(SESSION_ID))
         .thenReturn(sessionStatisticsResultDTO);
 
-    StartVideoCallStatisticsEventMessage startVideoCallStatisticsEventMessage = buildEventMessage();
+    StartVideoCallStatisticsEventMessage startVideoCallStatisticsEventMessage = buildEventMessageWithSession();
 
     // when
     startVideoCallListener.receiveMessage(startVideoCallStatisticsEventMessage);
@@ -78,6 +80,30 @@ public class StartVideoCallListenerTest {
         statisticsEvent.getMetaData(), is(buildMetaData(startVideoCallStatisticsEventMessage)));
   }
 
+  @Test
+  public void receiveMessage_Should_saveEventWithoutSessionToMongoDb() {
+    when(userStatisticsService.retrieveSessionViaSessionId(SESSION_ID))
+            .thenReturn(buildResultDto());
+
+    var startVideoCallStatisticsEventMessage = buildEventMessageWithoutSession();
+
+    startVideoCallListener.receiveMessage(startVideoCallStatisticsEventMessage);
+
+    verify(mongoTemplate).insert(statisticsEventCaptor.capture());
+
+    var statisticsEvent = statisticsEventCaptor.getValue();
+    assertThat(statisticsEvent.getEventType(), is(startVideoCallStatisticsEventMessage.getEventType()));
+    assertThat(statisticsEvent.getConsultingType(), is(nullValue()));
+    assertThat(statisticsEvent.getAgency(), is(nullValue()));
+    assertThat(
+            statisticsEvent.getTimestamp(),
+            is(startVideoCallStatisticsEventMessage.getTimestamp().truncatedTo(ChronoUnit.SECONDS).toInstant())
+    );
+    assertThat(statisticsEvent.getUser().getId(), is(startVideoCallStatisticsEventMessage.getUserId()));
+    assertThat(statisticsEvent.getUser().getUserRole(), is(UserRole.CONSULTANT));
+    assertThat(statisticsEvent.getMetaData(), is(buildMetaData(startVideoCallStatisticsEventMessage)));
+  }
+
   private SessionStatisticsResultDTO buildResultDto() {
     return new SessionStatisticsResultDTO()
         .id(SESSION_ID)
@@ -87,7 +113,7 @@ public class StartVideoCallListenerTest {
         .rcGroupId(RC_GROUP_ID);
   }
 
-  private StartVideoCallStatisticsEventMessage buildEventMessage() {
+  private StartVideoCallStatisticsEventMessage buildEventMessageWithSession() {
     return new StartVideoCallStatisticsEventMessage()
         .sessionId(SESSION_ID)
         .eventType(EventType.CREATE_MESSAGE)
@@ -95,6 +121,15 @@ public class StartVideoCallListenerTest {
         .userRole(UserRole.CONSULTANT)
         .timestamp(OffsetDateTime.now())
         .videoCallUuid(VIDEO_CALL_UUID);
+  }
+
+  private StartVideoCallStatisticsEventMessage buildEventMessageWithoutSession() {
+    return new StartVideoCallStatisticsEventMessage()
+            .eventType(EventType.START_VIDEO_CALL)
+            .userId(CONSULTANT_ID)
+            .userRole(UserRole.CONSULTANT)
+            .timestamp(OffsetDateTime.now())
+            .videoCallUuid(VIDEO_CALL_UUID);
   }
 
   private StartVideoCallMetaData buildMetaData(StartVideoCallStatisticsEventMessage eventMessage) {

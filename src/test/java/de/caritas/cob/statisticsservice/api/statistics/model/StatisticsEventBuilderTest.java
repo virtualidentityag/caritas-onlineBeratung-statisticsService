@@ -1,5 +1,19 @@
 package de.caritas.cob.statisticsservice.api.statistics.model;
 
+import de.caritas.cob.statisticsservice.api.model.EventType;
+import de.caritas.cob.statisticsservice.api.model.UserRole;
+import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEventBuilder;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.CreateMessageMetaData;
+import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.Instant;
+
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.AGENCY_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTANT_ID;
 import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.CONSULTING_TYPE_ID;
@@ -8,22 +22,10 @@ import static de.caritas.cob.statisticsservice.api.testhelper.TestConstants.SESS
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.times;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-
-import de.caritas.cob.statisticsservice.api.model.EventType;
-import de.caritas.cob.statisticsservice.api.model.UserRole;
-import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
-import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEventBuilder;
-import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.CreateMessageMetaData;
-import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
-import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
-import java.time.Instant;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StatisticsEventBuilderTest {
@@ -154,7 +156,44 @@ public class StatisticsEventBuilderTest {
         .withUserRole(UserRole.CONSULTANT)
         .build();
 
-    verify(userStatisticsService, times(1)).retrieveSessionViaSessionId(SESSION_ID);
+    verify(userStatisticsService).retrieveSessionViaSessionId(SESSION_ID);
+  }
+
+  @Test
+  public void buildShouldNotRequestSessionFromUserServiceOnStartVideoCallEvent() {
+    Instant now = Instant.now();
+    Object metaData = buildMetaData();
+
+    var result = StatisticsEventBuilder.getInstance()
+            .withEventType(EventType.START_VIDEO_CALL)
+            .withTimestamp(now)
+            .withUserId(CONSULTANT_ID)
+            .withUserRole(UserRole.CONSULTANT)
+            .withMetaData(metaData)
+            .build();
+
+    assertThat(result.getEventType(), is(EventType.START_VIDEO_CALL));
+    assertThat(result.getTimestamp(), is(now));
+    assertThat(result.getMetaData(), notNullValue());
+    assertThat(result.getMetaData(), is(metaData));
+    assertThat(result.getUser(), notNullValue());
+    assertThat(result.getUser().getId(), is(CONSULTANT_ID));
+    assertThat(result.getUser().getUserRole(), is(UserRole.CONSULTANT));
+    assertThat(result.getAgency(), nullValue());
+    assertThat(result.getConsultingType(), nullValue());
+
+    verifyNoInteractions(userStatisticsService);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void buildShouldIllegalArgExceptionOnMissingSessionAndNotStartVideoCallEvent() {
+    StatisticsEventBuilder.getInstance()
+            .withEventType(EventType.ASSIGN_SESSION)
+            .withTimestamp(Instant.now())
+            .withUserId(CONSULTANT_ID)
+            .withUserRole(UserRole.CONSULTANT)
+            .withMetaData(new Object())
+            .build();
   }
 
   private SessionStatisticsResultDTO buildSessionStatisticsResultDto() {
