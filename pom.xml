@@ -75,11 +75,6 @@
       <artifactId>hibernate-validator</artifactId>
       <version>6.1.6.Final</version>
     </dependency>
-    <!-- Spring actuator  -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
 
     <!-- OpenApi/Swagger dependencies -->
     <dependency>
@@ -258,6 +253,25 @@
                 <sourceFolder>/</sourceFolder>
               </configOptions>
               <inputSpec>${project.basedir}/api/statisticsservice.yaml</inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>${project.groupId}.${project.artifactId}.generated.api.controller
+              </apiPackage>
+              <modelPackage>${project.groupId}.${project.artifactId}.api.model</modelPackage>
+              <generateSupportingFiles>true</generateSupportingFiles>
+              <output>target/generated-sources</output>
+            </configuration>
+          </execution>
+          <execution>
+            <id>healtcheck-service</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <configOptions>
+                <interfaceOnly>true</interfaceOnly>
+                <sourceFolder>/</sourceFolder>
+              </configOptions>
+              <inputSpec>${project.basedir}/api/healthcheckservice.yaml</inputSpec>
               <generatorName>spring</generatorName>
               <apiPackage>${project.groupId}.${project.artifactId}.generated.api.controller
               </apiPackage>

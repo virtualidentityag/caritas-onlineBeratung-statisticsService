@@ -30,7 +30,7 @@ class HttpTenantFilterTest {
   void doFilterInternal_Should_NotApply_When_RequestBelongsToTenancyWhiteList()
       throws ServletException, IOException {
     // given
-    Mockito.when(request.getRequestURI()).thenReturn("/actuator/health/liveness");
+    Mockito.when(request.getRequestURI()).thenReturn("/healthcheck/health/liveness");
 
     // when
     httpTenantFilter.doFilterInternal(request, response, filterChain);

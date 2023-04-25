@@ -1,0 +1,65 @@
+openapi: 3.0.1
+info:
+  title: Healthcheck APIs
+  version: 0.0.1
+paths:
+  /healthcheck/health:
+    get:
+      tags:
+        - healthcheck-controller
+      summary: 'Returns healthcheck data [Authorization: none]'
+      operationId: getHealthcheck
+      responses:
+        200:
+          description: OK - successfull operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponseDTO'
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+  /healthcheck/health/liveness:
+    get:
+      tags:
+        - healthcheck-controller
+      summary: 'Returns healtcheck data, liveness probe [Authorization: none]'
+      operationId: getHealthcheckLiveness
+      responses:
+        200:
+          description: OK - successfull operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponseDTO'
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
+  /healthcheck/health/readiness:
+    get:
+      tags:
+        - healthcheck-controller
+      summary: 'Returns healtcheck data, readiness probe [Authorization: none]'
+      operationId: getHealthcheckReadiness
+      responses:
+        200:
+          description: OK - successfull operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponseDTO'
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
+components:
+  schemas:
+    HealtcheckStatus:
+      type: string
+      enum:
+        - "UP"
+        - "DOWN"
+        -
+    HealthcheckResponseDTO:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/HealtcheckStatus'
