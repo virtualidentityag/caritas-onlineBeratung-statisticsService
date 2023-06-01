@@ -258,6 +258,9 @@ components:
           format: int64
           description: The id of the tenant
           example: 1
+        tenantName:
+          type: string
+          example: 'Tenant name'
         registrationDate:
           type: string
           example: '2022-08-15T21:11:29'
@@ -281,6 +284,9 @@ components:
         postalCode:
           type: string
           example: '99999'
+        agencyName:
+          type: string
+          example: "Dortmund Beratungstelle"
 
     RegistrationStatisticsListResponseDTO:
       type: object
@@ -324,6 +330,12 @@ components:
         postalCode:
           type: string
           example: '99999'
+        tenantName:
+          type: string
+          example: 'Tenant name'
+        agencyName:
+          type: string
+          example: "Dortmund Beratungstelle"
 
     BookingCreatedStatisticsEventMessage:
       type: object

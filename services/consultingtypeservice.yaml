@@ -273,9 +273,6 @@ components:
         isAnonymousConversationAllowed:
           type: boolean
           example: false
-        isSetEmailAllowed:
-          type: boolean
-          example: true
         showAskerProfile:
           type: boolean
           example: true
@@ -310,9 +307,6 @@ components:
             sendFurtherStepsMessage:
               type: boolean
               example: true
-            sendSaveSessionDataMessage:
-              type: boolean
-              example: false
             sessionDataInitializing:
               allOf:
                 - $ref: '#/components/schemas/SessionDataInitializingDTO'
@@ -368,9 +362,6 @@ components:
         isAnonymousConversationAllowed:
           type: boolean
           example: false
-        isSetEmailAllowed:
-          type: boolean
-          example: true
         showAskerProfile:
           type: boolean
           example: true
@@ -680,9 +671,6 @@ components:
         sendFurtherStepsMessage:
           type: boolean
           example: true
-        sendSaveSessionDataMessage:
-          type: boolean
-          example: false
         welcomeMessage:
           allOf:
             - $ref: '#/components/schemas/WelcomeMessageDTO'

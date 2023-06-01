@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class RegistrationMetaData {
 
   private Long tenantId;
+  private String tenantName;
+  private String agencyName;
   private String registrationDate;
   private Integer age;
   private String gender;

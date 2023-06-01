@@ -48,6 +48,9 @@ public class TestConstants {
                   .mainTopicInternalAttribute("angeho01")
                   .topicsInternalAttributes(List.of("angeho01", "angeho13"))
                   .postalCode("99999")
+                  .tenantName("tenanName")
+                  .agencyName("agencyName")
+
           ).addRegistrationStatisticsItem(new RegistrationStatisticsResponseDTO()
                   .userId(ASKER_ID)
                   .registrationDate("2022-08-15T21:11:29")
@@ -57,6 +60,8 @@ public class TestConstants {
                   .mainTopicInternalAttribute("angeho13")
                   .topicsInternalAttributes(List.of("angeho01", "angeho13"))
                   .postalCode("11111")
+                  .tenantName("tenanName")
+                  .agencyName("agencyName")
           );
 
 }
