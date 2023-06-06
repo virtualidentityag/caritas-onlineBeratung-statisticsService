@@ -21,6 +21,8 @@ public class RegistrationStatisticsDTOConverter {
         .userId(rawEvent.getUser().getId())
         .registrationDate(metadata.getRegistrationDate())
         .age(metadata.getAge())
+        .tenantName(metadata.getTenantName())
+        .agencyName(metadata.getAgencyName())
         .gender(metadata.getGender())
         .counsellingRelation(metadata.getCounsellingRelation())
         .mainTopicInternalAttribute(metadata.getMainTopicInternalAttribute())

@@ -49,6 +49,8 @@ public class RegistrationListener {
   private RegistrationMetaData buildMetaData(RegistrationStatisticsEventMessage eventMessage) {
     return RegistrationMetaData.builder()
         .tenantId(eventMessage.getTenantId())
+        .tenantName(eventMessage.getTenantName())
+        .agencyName(eventMessage.getAgencyName())
         .registrationDate(eventMessage.getRegistrationDate())
         .age(eventMessage.getAge())
         .gender(eventMessage.getGender())
