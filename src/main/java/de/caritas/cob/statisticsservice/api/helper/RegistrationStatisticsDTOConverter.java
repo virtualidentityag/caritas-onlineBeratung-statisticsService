@@ -28,7 +28,8 @@ public class RegistrationStatisticsDTOConverter {
         .mainTopicInternalAttribute(metadata.getMainTopicInternalAttribute())
         .topicsInternalAttributes(metadata.getTopicsInternalAttributes())
         .endDate(findEndDate(rawEvent.getSessionId(), archiveSessionEvents))
-        .postalCode(metadata.getPostalCode());
+        .postalCode(metadata.getPostalCode())
+        .referer(metadata.getReferer());
   }
 
   private String findEndDate(Long sessionId, List<StatisticsEvent> archiveSessionEvents) {

@@ -58,6 +58,7 @@ public class RegistrationListener {
         .topicsInternalAttributes(eventMessage.getTopicsInternalAttributes())
         .mainTopicInternalAttribute(eventMessage.getMainTopicInternalAttribute())
         .postalCode(eventMessage.getPostalCode())
+        .referer(eventMessage.getReferer())
         .build();
   }
 }

@@ -287,6 +287,9 @@ components:
         agencyName:
           type: string
           example: "Dortmund Beratungstelle"
+        referer:
+          type: string
+          example: "referer"
 
     RegistrationStatisticsListResponseDTO:
       type: object
@@ -336,6 +339,9 @@ components:
         agencyName:
           type: string
           example: "Dortmund Beratungstelle"
+        referer:
+          type: string
+          example: "referer"
 
     BookingCreatedStatisticsEventMessage:
       type: object

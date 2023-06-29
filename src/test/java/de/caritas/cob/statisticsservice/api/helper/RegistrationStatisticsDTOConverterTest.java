@@ -66,6 +66,8 @@ class RegistrationStatisticsDTOConverterTest {
         is("tenantName"));
     assertThat(result.getAgencyName(),
         is("agencyName"));
+    assertThat(result.getReferer(),
+        is("aReferer"));
   }
 
   @Test
@@ -135,6 +137,7 @@ class RegistrationStatisticsDTOConverterTest {
         .counsellingRelation("SELF_COUNSELLING")
         .tenantName("tenantName")
         .agencyName("agencyName")
+        .referer("aReferer")
         .build();
     testEvent = StatisticsEvent.builder()
         .sessionId(sessionId)

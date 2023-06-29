@@ -22,5 +22,6 @@ public class RegistrationMetaData {
   private List<String> topicsInternalAttributes = null;
   private String mainTopicInternalAttribute;
   private String postalCode;
+  private String referer;
 
 }
