@@ -42,7 +42,7 @@ public class RegistrationStatisticsDTOConverter {
 
   private Optional<StatisticsEvent> findMaxArchiveSessionEvent(Long sessionId, List<StatisticsEvent> archiveSessionEvents) {
     return nonNull(archiveSessionEvents) ? archiveSessionEvents.stream()
-        .filter(event -> event.getSessionId() == sessionId)
+        .filter(event -> event.getSessionId() != null && event.getSessionId().equals(sessionId))
         .max(comparing(StatisticsEvent::getTimestamp)) : Optional.empty();
   }
 }

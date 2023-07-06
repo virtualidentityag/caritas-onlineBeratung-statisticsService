@@ -84,7 +84,7 @@ class RegistrationStatisticsDTOConverterTest {
   @Test
   void convertStatisticsEvent_Should_addNewestArchiveSessionEndDate_When_multipleArchiveSessionEventsAreAvailable() {
     // given
-    givenValidStatisticEvent(1L);
+    givenValidStatisticEvent(new Long(1L));
     givenValidArchiveStatisticEvents();
 
     // when
@@ -149,7 +149,7 @@ class RegistrationStatisticsDTOConverterTest {
 
   private void givenValidArchiveStatisticEvents() {
     archiveSessionEvents = List.of(archiveEvent(1L, "2022-10-17T10:00:00.00Z", "1 end date for session 1"),
-        archiveEvent(1L, "2022-10-18T10:00:00.00Z", "2 end date for session 1"),
+        archiveEvent(new Long(1), "2022-10-18T10:00:00.00Z", "2 end date for session 1"),
         archiveEvent(2L, "2022-10-18T10:00:00.00Z", "end date for session 2"),
         archiveEvent(999L, "2022-10-19T10:00:00.00Z", "dummy end date"));
   }
