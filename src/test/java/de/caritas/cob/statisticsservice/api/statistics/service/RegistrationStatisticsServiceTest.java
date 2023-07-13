@@ -20,6 +20,7 @@ import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Con
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.User;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.DeleteAccountMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.RegistrationMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventRepository;
 import de.caritas.cob.statisticsservice.api.statistics.repository.StatisticsEventTenantAwareRepository;
@@ -93,7 +94,7 @@ class RegistrationStatisticsServiceTest {
     var result = registrationStatisticsService.fetchRegistrationStatisticsData();
 
     // then
-    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList());
+    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList(), anyList());
 
     assertThat(result.getRegistrationStatistics().get(0).getUserId(), is(ASKER_ID));
     assertThat(result.getRegistrationStatistics().get(0).getRegistrationDate(),
@@ -119,7 +120,7 @@ class RegistrationStatisticsServiceTest {
     var result = registrationStatisticsService.fetchRegistrationStatisticsData();
 
     // then
-    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList());
+    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList(), anyList());
 
     assertThat(result.getRegistrationStatistics().get(0).getEndDate(), is("end date 1"));
 
@@ -157,8 +158,21 @@ class RegistrationStatisticsServiceTest {
     when(statisticsEventRepository.getAllArchiveSessionEvents()).thenReturn(archiveEvents);
   }
 
+  private void givenDeleteSessionEvents() {
+    List<StatisticsEvent> deleteAccountEvents = List.of(archiveSessionEvent(1L, "end date 1"),
+        archiveSessionEvent(99L, "end date 2"));
+    when(statisticsEventRepository.getAllDeleteAccountSessionEvents()).thenReturn(deleteAccountEvents);
+  }
+
   private StatisticsEvent archiveSessionEvent(Long sessionId, String endDate) {
     Object metaData = ArchiveMetaData.builder().endDate(endDate).build();
     return StatisticsEvent.builder().sessionId(sessionId).metaData(metaData).build();
+  }
+
+  private StatisticsEvent deleteAccountEvents(String userId, String deleteDate) {
+    User user = new User();
+    user.setId(userId);
+    Object metaData = DeleteAccountMetaData.builder().deleteDate(deleteDate).build();
+    return StatisticsEvent.builder().user(user).metaData(metaData).build();
   }
 }

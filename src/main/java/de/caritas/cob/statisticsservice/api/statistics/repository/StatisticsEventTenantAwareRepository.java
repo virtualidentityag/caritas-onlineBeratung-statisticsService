@@ -12,4 +12,7 @@ public interface StatisticsEventTenantAwareRepository extends MongoRepository<St
 
   @Query(value = "{'eventType': 'ARCHIVE_SESSION', 'metaData.tenantId': ?0}")
   List<StatisticsEvent> getAllArchiveSessionEvents(Long tenantId);
+
+  @Query(value = "{'eventType': 'DELETE_ACCOUNT', 'metaData.tenantId': ?0}")
+  List<StatisticsEvent> getAllDeleteAccountSessionEvents(Long tenantId);
 }

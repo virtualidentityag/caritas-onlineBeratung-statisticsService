@@ -53,6 +53,8 @@ public class RabbitMqConfig {
   public static final String QUEUE_NAME_BOOKING_RESCHEDULED = QUEUE_PREFIX + EventType.BOOKING_RESCHEDULED;
   public static final String QUEUE_NAME_BOOKING_CANCELED = QUEUE_PREFIX + EventType.BOOKING_CANCELLED;
 
+  public static final String QUEUE_NAME_DELETE_ACCOUNT = QUEUE_PREFIX + EventType.DELETE_ACCOUNT;
+
   @Value("${spring.rabbitmq.listener.simple.retry.max-attempts}")
   private int retryMaxAttempts;
   @Value("${spring.rabbitmq.listener.simple.retry.initial-interval}")
@@ -75,6 +77,8 @@ public class RabbitMqConfig {
     var bookingCreatedStatisticsEventQueue = buildQueue(QUEUE_NAME_BOOKING_CREATED);
     var bookingRescheduledStatisticsEventQueue = buildQueue(QUEUE_NAME_BOOKING_RESCHEDULED);
     var bookingCanceledStatisticsEventQueue = buildQueue(QUEUE_NAME_BOOKING_CANCELED);
+    var deleteAccountStatisticsEventQueue = buildQueue(QUEUE_NAME_DELETE_ACCOUNT);
+
 
     var deadLetterExchange = new DirectExchange(DEAD_LETTER_EXCHANGE_NAME, true, false);
     var topicExchange = new TopicExchange(STATISTICS_EXCHANGE_NAME, true, false);
@@ -119,7 +123,12 @@ public class RabbitMqConfig {
         bookingCanceledStatisticsEventQueue,
         BindingBuilder.bind(bookingCanceledStatisticsEventQueue)
             .to(topicExchange)
-            .with(EventType.BOOKING_CANCELLED));
+            .with(EventType.BOOKING_CANCELLED),
+        deleteAccountStatisticsEventQueue,
+        BindingBuilder.bind(deleteAccountStatisticsEventQueue)
+            .to(topicExchange)
+            .with(EventType.DELETE_ACCOUNT)
+    );
   }
 
   private Queue buildQueue(String queueName) {

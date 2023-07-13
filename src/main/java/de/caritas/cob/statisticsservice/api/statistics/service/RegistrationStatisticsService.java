@@ -36,11 +36,12 @@ public class RegistrationStatisticsService {
 
   private RegistrationStatisticsListResponseDTO buildResponseDTO() {
     List<StatisticsEvent> archiveSessionEvents = getArchiveSessionEvents();
+    List<StatisticsEvent> deleteAcccountEvents = getDeleteAccountEvents();
 
     RegistrationStatisticsListResponseDTO registrationStatisticsList = new RegistrationStatisticsListResponseDTO();
     getRegistrationStatistics()
         .stream()
-        .map(rawEvent -> registrationStatisticsDTOConverter.convertStatisticsEvent(rawEvent, archiveSessionEvents))
+        .map(rawEvent -> registrationStatisticsDTOConverter.convertStatisticsEvent(rawEvent, archiveSessionEvents, deleteAcccountEvents))
         .forEach(registrationStatisticsList::addRegistrationStatisticsItem);
 
     return registrationStatisticsList;
@@ -60,6 +61,24 @@ public class RegistrationStatisticsService {
     } else {
       return getArchiveSessionEventsForCurrentTenant();
     }
+  }
+
+  private List<StatisticsEvent> getDeleteAccountEvents() {
+    if (isAllTenantAccessContext()) {
+      return getDeleteAccountEventsForAllTenants();
+    } else {
+      return getDeleteAccountEventsForCurrentTenant();
+    }
+  }
+
+  private List<StatisticsEvent> getDeleteAccountEventsForAllTenants() {
+    log.info("Gathering delete account events for all tenants");
+    return statisticsEventRepository.getAllDeleteAccountSessionEvents();
+  }
+
+  private List<StatisticsEvent> getDeleteAccountEventsForCurrentTenant() {
+    log.info("Gathering delete account events for current tenant");
+    return statisticsEventTenantAwareRepository.getAllDeleteAccountSessionEvents(TenantContext.getCurrentTenant());
   }
 
   private List<StatisticsEvent> getRegistrationStatisticsForCurrentTenant() {
@@ -91,3 +110,4 @@ public class RegistrationStatisticsService {
     return !multitenancyEnabled;
   }
 }
+
