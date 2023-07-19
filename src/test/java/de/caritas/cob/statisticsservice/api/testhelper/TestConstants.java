@@ -50,6 +50,7 @@ public class TestConstants {
                   .postalCode("99999")
                   .tenantName("tenanName")
                   .agencyName("agencyName")
+                  .referer("https://www.caritas.de/")
 
           ).addRegistrationStatisticsItem(new RegistrationStatisticsResponseDTO()
                   .userId(ASKER_ID)
@@ -62,6 +63,7 @@ public class TestConstants {
                   .postalCode("11111")
                   .tenantName("tenanName")
                   .agencyName("agencyName")
+                  .referer("https://www.caritas.de/")
           );
 
 }
