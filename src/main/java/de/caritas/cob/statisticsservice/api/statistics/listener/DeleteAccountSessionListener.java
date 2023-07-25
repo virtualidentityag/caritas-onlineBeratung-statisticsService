@@ -1,6 +1,5 @@
 package de.caritas.cob.statisticsservice.api.statistics.listener;
 
-import de.caritas.cob.statisticsservice.api.model.ArchiveSessionStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.model.DeleteAccountStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
@@ -25,7 +24,7 @@ public class DeleteAccountSessionListener {
   /**
    * Consumer for archive session message statistics event.
    *
-   * @param eventMessage the {@link ArchiveSessionStatisticsEventMessage} instance
+   * @param eventMessage the {@link de.caritas.cob.statisticsservice.api.model.ArchiveOrDeleteSessionStatisticsEventMessage} instance
    */
   @RabbitListener(
       id = "delete-account-event-listener",

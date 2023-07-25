@@ -1,6 +1,6 @@
 package de.caritas.cob.statisticsservice.api.statistics.listener;
 
-import de.caritas.cob.statisticsservice.api.model.ArchiveSessionStatisticsEventMessage;
+import de.caritas.cob.statisticsservice.api.model.ArchiveOrDeleteSessionStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEventBuilder;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ArchiveSessionListener {
+public class ArchiveOrDeleteSessionListener {
 
   private final @NonNull MongoTemplate mongoTemplate;
   private final @NonNull UserStatisticsService userStatisticsService;
@@ -24,13 +24,13 @@ public class ArchiveSessionListener {
   /**
    * Consumer for archive session message statistics event.
    *
-   * @param eventMessage the {@link ArchiveSessionStatisticsEventMessage} instance
+   * @param eventMessage the {@link ArchiveOrDeleteSessionStatisticsEventMessage} instance
    */
   @RabbitListener(
       id = "archive-session-event-listener",
       queues = "#{rabbitMqConfig.QUEUE_NAME_ARCHIVE_SESSION}",
       containerFactory = "simpleRabbitListenerContainerFactory")
-  public void receiveMessage(ArchiveSessionStatisticsEventMessage eventMessage) {
+  public void receiveMessage(ArchiveOrDeleteSessionStatisticsEventMessage eventMessage) {
 
     StatisticsEvent statisticsEvent =
         StatisticsEventBuilder.getInstance(
@@ -45,7 +45,7 @@ public class ArchiveSessionListener {
     mongoTemplate.insert(statisticsEvent);
   }
 
-  private ArchiveMetaData buildMetaData(ArchiveSessionStatisticsEventMessage eventMessage) {
+  private ArchiveMetaData buildMetaData(ArchiveOrDeleteSessionStatisticsEventMessage eventMessage) {
     return ArchiveMetaData.builder()
         .endDate(eventMessage.getEndDate())
         .tenantId(eventMessage.getTenantId())
