@@ -83,8 +83,15 @@ public interface StatisticsEventRepository extends MongoRepository<StatisticsEve
   @Query(value = "{'eventType': 'REGISTRATION'}")
   List<StatisticsEvent> getAllRegistrationStatistics();
 
+  @Query(value = "{'eventType': 'START_VIDEO_CALL'}")
+  List<StatisticsEvent> getAllStartVideoCallSessionEvents();
+
   @Query(value = "{'eventType': 'ARCHIVE_SESSION'}")
   List<StatisticsEvent> getAllArchiveSessionEvents();
+
+  @Query(value = "{'eventType': 'BOOKING_CREATED'}")
+  List<StatisticsEvent> getAllBookingCreatedEvents();
+
 
   @Query(value = "{'eventType': 'DELETE_ACCOUNT'}")
   List<StatisticsEvent> getAllDeleteAccountSessionEvents();

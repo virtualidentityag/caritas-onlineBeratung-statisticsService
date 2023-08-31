@@ -17,6 +17,7 @@ import de.caritas.cob.statisticsservice.api.model.EventType;
 import de.caritas.cob.statisticsservice.api.model.UserRole;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Agency;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.ConsultingType;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticEventsContainer;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.User;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
@@ -94,7 +95,8 @@ class RegistrationStatisticsServiceTest {
     var result = registrationStatisticsService.fetchRegistrationStatisticsData();
 
     // then
-    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList(), anyList());
+    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), any(
+        StatisticEventsContainer.class));
 
     assertThat(result.getRegistrationStatistics().get(0).getUserId(), is(ASKER_ID));
     assertThat(result.getRegistrationStatistics().get(0).getRegistrationDate(),
@@ -120,7 +122,7 @@ class RegistrationStatisticsServiceTest {
     var result = registrationStatisticsService.fetchRegistrationStatisticsData();
 
     // then
-    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), anyList(), anyList());
+    verify(registrationStatisticsDTOConverter).convertStatisticsEvent(any(StatisticsEvent.class), any(StatisticEventsContainer.class));
 
     assertThat(result.getRegistrationStatistics().get(0).getEndDate(), is("end date 1"));
 

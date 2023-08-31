@@ -12,6 +12,7 @@ import de.caritas.cob.statisticsservice.api.model.RegistrationStatisticsResponse
 import de.caritas.cob.statisticsservice.api.model.UserRole;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Agency;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.ConsultingType;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticEventsContainer;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.User;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
@@ -49,8 +50,7 @@ class RegistrationStatisticsDTOConverterTest {
     givenValidStatisticEvent(1L);
 
     // when
-    RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, null, null);
+    RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(testEvent, new StatisticEventsContainer());
 
     // then
     assertThat(result.getUserId(), is(ASKER_ID));
@@ -80,7 +80,7 @@ class RegistrationStatisticsDTOConverterTest {
 
     // when
     RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, null, null);
+        testEvent, new StatisticEventsContainer());
 
     // then
     assertThat(result.getEndDate(), is(nullValue()));
@@ -89,12 +89,13 @@ class RegistrationStatisticsDTOConverterTest {
   @Test
   void convertStatisticsEvent_Should_addNewestArchiveSessionEndDate_When_multipleArchiveSessionEventsAreAvailable() {
     // given
-    givenValidStatisticEvent(new Long(1L));
+    givenValidStatisticEvent(1L);
     givenValidArchiveStatisticEvents();
 
     // when
     RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, archiveSessionEvents, null);
+        testEvent, StatisticEventsContainer.builder()
+            .archiveSessionEvents(archiveSessionEvents).build());
 
     // then
     assertThat(result.getEndDate(), is("2 end date for session 1"));
@@ -103,13 +104,16 @@ class RegistrationStatisticsDTOConverterTest {
   @Test
   void convertStatisticsEvent_Should_takeDeleteDateAsSessionEndDate_When_multipleArchiveSessionEventsAreAvailableAndDeleteDateExists() {
     // given
-    givenValidStatisticEvent(new Long(1L));
+    givenValidStatisticEvent(1L);
     givenValidArchiveStatisticEvents();
     givenAccountDeleteStatisticEvents();
 
     // when
     RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, archiveSessionEvents, deleteAccountEvents);
+        testEvent, StatisticEventsContainer.builder()
+            .archiveSessionEvents(archiveSessionEvents)
+            .deleteAccountEvents(deleteAccountEvents)
+            .build());
 
     // then
     assertThat(result.getEndDate(), is("delete date for user 1"));
@@ -123,7 +127,9 @@ class RegistrationStatisticsDTOConverterTest {
 
     // when
     RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, archiveSessionEvents, null);
+        testEvent, StatisticEventsContainer.builder()
+            .archiveSessionEvents(archiveSessionEvents)
+            .build());
 
     // then
     assertThat(result.getEndDate(), is("end date for session 2"));
@@ -137,7 +143,9 @@ class RegistrationStatisticsDTOConverterTest {
 
     // when
     RegistrationStatisticsResponseDTO result = registrationStatisticsDTOConverter.convertStatisticsEvent(
-        testEvent, archiveSessionEvents, null);
+        testEvent, StatisticEventsContainer.builder()
+            .archiveSessionEvents(archiveSessionEvents)
+            .build());
 
     // then
     assertThat(result.getEndDate(), is(nullValue()));
@@ -176,7 +184,7 @@ class RegistrationStatisticsDTOConverterTest {
 
   private void givenValidArchiveStatisticEvents() {
     archiveSessionEvents = List.of(archiveEvent(1L, "2022-10-17T10:00:00.00Z", "1 end date for session 1"),
-        archiveEvent(new Long(1), "2022-10-18T10:00:00.00Z", "2 end date for session 1"),
+        archiveEvent(1L, "2022-10-18T10:00:00.00Z", "2 end date for session 1"),
         archiveEvent(2L, "2022-10-18T10:00:00.00Z", "end date for session 2"),
         archiveEvent(999L, "2022-10-19T10:00:00.00Z", "dummy end date"));
   }

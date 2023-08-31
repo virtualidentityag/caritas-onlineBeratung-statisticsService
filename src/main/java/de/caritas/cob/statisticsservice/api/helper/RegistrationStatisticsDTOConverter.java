@@ -4,11 +4,13 @@ import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 
 import de.caritas.cob.statisticsservice.api.model.RegistrationStatisticsResponseDTO;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticEventsContainer;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.AdviceSeekerAwareMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.DeleteAccountMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.RegistrationMetaData;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +18,11 @@ import org.springframework.stereotype.Component;
 public class RegistrationStatisticsDTOConverter {
 
   public RegistrationStatisticsResponseDTO convertStatisticsEvent(
-      StatisticsEvent rawEvent, List<StatisticsEvent> archiveSessionEvents, List<StatisticsEvent> deleteAccountEvents) {
+      StatisticsEvent rawEvent, StatisticEventsContainer statisticEventsContainer) {
     RegistrationMetaData metadata = (RegistrationMetaData) rawEvent.getMetaData();
-    String maxArchiveDate = findMaxArchiveDate(rawEvent.getSessionId(), archiveSessionEvents);
-    String deleteAccountDate = findDeleteAccountDate(rawEvent.getUser().getId(), deleteAccountEvents);
+    String maxArchiveDate = findMaxArchiveDate(rawEvent.getSessionId(), statisticEventsContainer.getArchiveSessionEvents());
+    String deleteAccountDate = findDeleteAccountDate(rawEvent.getUser().getId(), statisticEventsContainer.getDeleteAccountEvents());
+
     return new RegistrationStatisticsResponseDTO()
         .userId(rawEvent.getUser().getId())
         .registrationDate(metadata.getRegistrationDate())
@@ -32,21 +35,42 @@ public class RegistrationStatisticsDTOConverter {
         .topicsInternalAttributes(metadata.getTopicsInternalAttributes())
         .endDate(getEndDate(maxArchiveDate, deleteAccountDate))
         .postalCode(metadata.getPostalCode())
-        .referer(metadata.getReferer());
+        .referer(metadata.getReferer())
+        .attendedVideoCallsCount(
+            countEventsPerAdviceSeekerMatchingOnMetadata(rawEvent.getUser().getId(), statisticEventsContainer.getVideoCallStartedEvents()))
+        .appointmentsBookedCount(countEventsPerAdviceSeekerMatchingOnMetadata(rawEvent.getUser().getId(), statisticEventsContainer.getBookingCreatedEvents()));
+  }
+
+  private Integer countEventsPerAdviceSeekerMatchingOnMetadata(String adviceSeekerId,
+      Collection<StatisticsEvent> events) {
+
+    return events != null
+        ? (int) getCountOfEventsPerAdviceSeekerMatchingOnMetadata(adviceSeekerId, events) : 0;
+  }
+
+  private long getCountOfEventsPerAdviceSeekerMatchingOnMetadata(String adviceSeekerId,
+      Collection<StatisticsEvent> videoCallStartedEvents) {
+    return videoCallStartedEvents.stream()
+        .filter(event -> {
+          AdviceSeekerAwareMetaData metaData = (AdviceSeekerAwareMetaData) event.getMetaData();
+          return metaData.getAdviceSeekerId() != null && metaData.getAdviceSeekerId()
+              .equals(adviceSeekerId);
+        })
+        .count();
   }
 
   private String getEndDate(String maxArchiveDate, String deleteAccountDate) {
     return deleteAccountDate != null ? deleteAccountDate : maxArchiveDate;
   }
 
-  private String findDeleteAccountDate(String userId, List<StatisticsEvent> deleteAccountEvents) {
+  private String findDeleteAccountDate(String userId, Collection<StatisticsEvent> deleteAccountEvents) {
     return deleteAccountEvents != null ? deleteAccountEvents.stream()
         .filter(event -> event.getUser() != null && event.getUser().getId().equals(userId))
         .map(event -> ((DeleteAccountMetaData) event.getMetaData()).getDeleteDate())
         .findFirst().orElse(null) : null;
   }
 
-  private String findMaxArchiveDate(Long sessionId, List<StatisticsEvent> archiveSessionEvents) {
+  private String findMaxArchiveDate(Long sessionId, Collection<StatisticsEvent> archiveSessionEvents) {
     var maxArchiveEvent = findMaxArchiveSessionEvent(sessionId, archiveSessionEvents);
     if (maxArchiveEvent.isPresent()) {
       ArchiveMetaData metaData = (ArchiveMetaData) maxArchiveEvent.get().getMetaData();
@@ -55,7 +79,7 @@ public class RegistrationStatisticsDTOConverter {
     return null;
   }
 
-  private Optional<StatisticsEvent> findMaxArchiveSessionEvent(Long sessionId, List<StatisticsEvent> archiveSessionEvents) {
+  private Optional<StatisticsEvent> findMaxArchiveSessionEvent(Long sessionId, Collection<StatisticsEvent> archiveSessionEvents) {
     return nonNull(archiveSessionEvents) ? archiveSessionEvents.stream()
         .filter(event -> event.getSessionId() != null && event.getSessionId().equals(sessionId))
         .max(comparing(StatisticsEvent::getTimestamp)) : Optional.empty();
