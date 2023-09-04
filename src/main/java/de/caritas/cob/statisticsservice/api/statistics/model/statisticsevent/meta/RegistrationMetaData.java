@@ -19,7 +19,7 @@ public class RegistrationMetaData {
   private Integer age;
   private String gender;
   private String counsellingRelation;
-  private List<String> topicsInternalAttributes = null;
+  private List<String> topicsInternalAttributes;
   private String mainTopicInternalAttribute;
   private String postalCode;
   private String referer;

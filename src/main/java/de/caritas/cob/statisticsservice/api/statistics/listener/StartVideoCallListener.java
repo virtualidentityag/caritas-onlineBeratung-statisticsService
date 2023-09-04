@@ -55,6 +55,7 @@ public class StartVideoCallListener {
         .duration(0)
         .timestampStop(null)
         .status(VideoCallStatus.ONGOING)
+        .adviceSeekerId(eventMessage.getAdviceSeekerId())
         .build();
   }
 }

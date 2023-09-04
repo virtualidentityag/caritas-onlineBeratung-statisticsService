@@ -228,6 +228,9 @@ components:
           type: boolean
           description: indicates whether the message has an attachment
           example: true
+        receiverId:
+          type: string
+          description: receiving user id of the message (taken from session). Can be null for groupchat.
 
     StartVideoCallStatisticsEventMessage:
       type: object
@@ -243,6 +246,9 @@ components:
           format: int64
           description: The id of the session
           example: 12345
+        adviceSeekerId:
+          type: string
+          description: The id of the adviceseeker
         videoCallUuid:
           type: string
           description: The uuid of the video call
@@ -365,6 +371,16 @@ components:
         referer:
           type: string
           example: "referer"
+        appointmentsBookedCount:
+          type: integer
+          example: "4"
+        attendedVideoCallsCount:
+          type: integer
+          example: "6"
+        consultantMessagesCount:
+          type: integer
+          example: "72"
+          description: "Total number of messages sent by all consultants to this adviceseeker"
 
     BookingCreatedStatisticsEventMessage:
       type: object
@@ -384,6 +400,8 @@ components:
           type: string
         bookingId:
           type: integer
+        adviceSeekerId:
+          type: string
 
     BookingRescheduledStatisticsEventMessage:
       type: object
