@@ -16,4 +16,6 @@ public class StatisticEventsContainer {
   private Collection<StatisticsEvent> deleteAccountEvents;
   private Collection<StatisticsEvent> videoCallStartedEvents;
   private Collection<StatisticsEvent> bookingCreatedEvents;
+  private Collection<StatisticsEvent> consultantMessageCreatedEvents;
+
 }

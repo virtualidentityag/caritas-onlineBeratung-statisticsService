@@ -92,9 +92,11 @@ public interface StatisticsEventRepository extends MongoRepository<StatisticsEve
   @Query(value = "{'eventType': 'BOOKING_CREATED'}")
   List<StatisticsEvent> getAllBookingCreatedEvents();
 
-
   @Query(value = "{'eventType': 'DELETE_ACCOUNT'}")
   List<StatisticsEvent> getAllDeleteAccountSessionEvents();
+
+  @Query(value = "{'eventType': 'CREATE_MESSAGE', 'user.userRole': 'CONSULTANT'}")
+  List<StatisticsEvent> getConsultantMessageCreatedEvents();
 
   /**
    * Calculate the number of done appointments.

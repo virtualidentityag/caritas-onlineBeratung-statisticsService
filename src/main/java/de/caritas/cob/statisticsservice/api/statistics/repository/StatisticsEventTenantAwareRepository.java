@@ -21,4 +21,7 @@ public interface StatisticsEventTenantAwareRepository extends MongoRepository<St
 
   @Query(value = "{'eventType': 'BOOKING_CREATED', 'metaData.tenantId': ?0}")
   List<StatisticsEvent> getAllBookingCreatedEvents(Long currentTenant);
+
+  @Query(value = "{'eventType': 'CREATE_MESSAGE', 'user.userRole': 'CONSULTANT', 'metaData.tenantId': ?0}")
+  List<StatisticsEvent> getConsultantMessageCreatedEvents(Long currentTenant);
 }

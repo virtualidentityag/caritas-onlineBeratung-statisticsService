@@ -8,6 +8,7 @@ import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.Sta
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.AdviceSeekerAwareMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.ArchiveMetaData;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.CreateMessageMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.DeleteAccountMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.RegistrationMetaData;
 import java.util.Collection;
@@ -38,7 +39,8 @@ public class RegistrationStatisticsDTOConverter {
         .referer(metadata.getReferer())
         .attendedVideoCallsCount(
             countEventsPerAdviceSeekerMatchingOnMetadata(rawEvent.getUser().getId(), statisticEventsContainer.getVideoCallStartedEvents()))
-        .appointmentsBookedCount(countEventsPerAdviceSeekerMatchingOnMetadata(rawEvent.getUser().getId(), statisticEventsContainer.getBookingCreatedEvents()));
+        .appointmentsBookedCount(countEventsPerAdviceSeekerMatchingOnMetadata(rawEvent.getUser().getId(), statisticEventsContainer.getBookingCreatedEvents()))
+        .consultantMessagesCount(countEventsPerAdviceSeekerMatchingOnMetadataByReceiverId(rawEvent.getUser().getId(), statisticEventsContainer.getConsultantMessageCreatedEvents()));
   }
 
   private Integer countEventsPerAdviceSeekerMatchingOnMetadata(String adviceSeekerId,
@@ -48,12 +50,30 @@ public class RegistrationStatisticsDTOConverter {
         ? (int) getCountOfEventsPerAdviceSeekerMatchingOnMetadata(adviceSeekerId, events) : 0;
   }
 
+  private Integer countEventsPerAdviceSeekerMatchingOnMetadataByReceiverId(String adviceSeekerId,
+      Collection<StatisticsEvent> events) {
+
+    return events != null
+        ? (int) getCountOfEventsPerAdviceSeekerMatchingOnMetadataByReceiverId(adviceSeekerId, events) : 0;
+  }
+
   private long getCountOfEventsPerAdviceSeekerMatchingOnMetadata(String adviceSeekerId,
-      Collection<StatisticsEvent> videoCallStartedEvents) {
-    return videoCallStartedEvents.stream()
+      Collection<StatisticsEvent> statisticsEvents) {
+    return statisticsEvents.stream()
         .filter(event -> {
           AdviceSeekerAwareMetaData metaData = (AdviceSeekerAwareMetaData) event.getMetaData();
           return metaData.getAdviceSeekerId() != null && metaData.getAdviceSeekerId()
+              .equals(adviceSeekerId);
+        })
+        .count();
+  }
+
+  private long getCountOfEventsPerAdviceSeekerMatchingOnMetadataByReceiverId(String adviceSeekerId,
+      Collection<StatisticsEvent> createMessageEvents) {
+    return createMessageEvents.stream()
+        .filter(event -> {
+          CreateMessageMetaData metaData = (CreateMessageMetaData) event.getMetaData();
+          return metaData.getReceiverId() != null && metaData.getReceiverId()
               .equals(adviceSeekerId);
         })
         .count();
