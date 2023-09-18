@@ -19,7 +19,7 @@ public class BookingCreatedMetaData implements AdviceSeekerAwareMetaData {
   private String uid;
   private Integer bookingId;
   private Integer currentBookingId;
-
   private String adviceSeekerId;
+  private Long tenantId;
 
 }

@@ -1,8 +1,8 @@
 package de.caritas.cob.statisticsservice.api.service;
 
 import de.caritas.cob.statisticsservice.api.service.securityheader.TenantHeaderSupplier;
+import de.caritas.cob.statisticsservice.config.apiclient.UserStatisticsApiControllerFactory;
 import de.caritas.cob.statisticsservice.config.cache.CacheManagerConfig;
-import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.UserStatisticsControllerApi;
 import de.caritas.cob.statisticsservice.api.service.securityheader.SecurityHeaderSupplier;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
 import lombok.NonNull;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserStatisticsService {
 
-  private final @NonNull UserStatisticsControllerApi userStatisticsControllerApi;
+  private final @NonNull UserStatisticsApiControllerFactory userStatisticsApiControllerFactory;
   private final @NonNull SecurityHeaderSupplier securityHeaderSupplier;
   private final @NonNull TenantHeaderSupplier tenantHeaderSupplier;
 
@@ -41,6 +41,7 @@ public class UserStatisticsService {
   }
 
   private SessionStatisticsResultDTO retrieveSession(Long sessionId, String rcGroupId) {
+    var userStatisticsControllerApi = userStatisticsApiControllerFactory.createControllerApi();
     addDefaultHeaders(userStatisticsControllerApi.getApiClient());
     return userStatisticsControllerApi
         .getSession(sessionId, rcGroupId);

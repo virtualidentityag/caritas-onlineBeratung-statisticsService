@@ -52,6 +52,7 @@ public class BookingCreatedListener extends BookingListener {
         .bookingId(eventMessage.getBookingId())
         .currentBookingId(eventMessage.getBookingId())
         .adviceSeekerId(eventMessage.getAdviceSeekerId())
+        .tenantId(eventMessage.getTenantId())
         .build();
   }
 }

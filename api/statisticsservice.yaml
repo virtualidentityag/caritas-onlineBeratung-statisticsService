@@ -231,6 +231,11 @@ components:
         receiverId:
           type: string
           description: receiving user id of the message (taken from session). Can be null for groupchat.
+        tenantId:
+          type: integer
+          format: int64
+          description: The id of the tenant
+          example: 1
 
     StartVideoCallStatisticsEventMessage:
       type: object
@@ -253,6 +258,10 @@ components:
           type: string
           description: The uuid of the video call
           example: 123e4567-e89b-12d3-a456-556642440000
+        tenantId:
+          type: integer
+          format: int64
+          description: The id of the tenant
 
     StopVideoCallStatisticsEventMessage:
       type: object
@@ -402,6 +411,10 @@ components:
           type: integer
         adviceSeekerId:
           type: string
+        tenantId:
+          type: integer
+          format: int64
+          description: The id of the tenant
 
     BookingRescheduledStatisticsEventMessage:
       type: object
