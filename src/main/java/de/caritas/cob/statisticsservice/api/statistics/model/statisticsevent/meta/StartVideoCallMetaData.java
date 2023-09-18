@@ -18,4 +18,6 @@ public class StartVideoCallMetaData implements AdviceSeekerAwareMetaData {
   private VideoCallStatus status;
   private String adviceSeekerId;
 
+  private Long tenantId;
+
 }
