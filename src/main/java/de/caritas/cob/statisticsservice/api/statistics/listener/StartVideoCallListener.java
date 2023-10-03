@@ -52,9 +52,11 @@ public class StartVideoCallListener {
   private StartVideoCallMetaData buildMetaData(StartVideoCallStatisticsEventMessage eventMessage) {
     return StartVideoCallMetaData.builder()
         .videoCallUuid(eventMessage.getVideoCallUuid())
+        .tenantId(eventMessage.getTenantId())
         .duration(0)
         .timestampStop(null)
         .status(VideoCallStatus.ONGOING)
+        .adviceSeekerId(eventMessage.getAdviceSeekerId())
         .build();
   }
 }

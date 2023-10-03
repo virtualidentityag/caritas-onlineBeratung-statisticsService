@@ -10,11 +10,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StartVideoCallMetaData {
+public class StartVideoCallMetaData implements AdviceSeekerAwareMetaData {
 
   private String videoCallUuid;
   private long duration;
   private Instant timestampStop;
   private VideoCallStatus status;
+  private String adviceSeekerId;
+
+  private Long tenantId;
 
 }
