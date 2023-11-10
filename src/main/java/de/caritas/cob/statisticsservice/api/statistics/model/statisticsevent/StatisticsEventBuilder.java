@@ -1,12 +1,14 @@
 package de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent;
 
-import static java.util.Objects.requireNonNull;
-
-import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
 import de.caritas.cob.statisticsservice.api.model.EventType;
 import de.caritas.cob.statisticsservice.api.model.UserRole;
+import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.model.SessionStatisticsResultDTO;
+
 import java.time.Instant;
 import java.util.function.Supplier;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 /** Builder for a {@link StatisticsEvent} instance. */
 public class StatisticsEventBuilder {
@@ -17,6 +19,10 @@ public class StatisticsEventBuilder {
   private String userId;
   private UserRole userRole;
   private Object metaData;
+
+  private StatisticsEventBuilder() {
+    sessionSupplier = null;
+  }
 
   private StatisticsEventBuilder(Supplier<SessionStatisticsResultDTO> sessionSupplier) {
     this.sessionSupplier = sessionSupplier;
@@ -32,6 +38,10 @@ public class StatisticsEventBuilder {
   public static StatisticsEventBuilder getInstance(
       Supplier<SessionStatisticsResultDTO> sessionSupplier) {
     return new StatisticsEventBuilder(sessionSupplier);
+  }
+
+  public static StatisticsEventBuilder getInstance() {
+    return new StatisticsEventBuilder();
   }
 
   /**
@@ -99,18 +109,26 @@ public class StatisticsEventBuilder {
 
     validateAttributes();
 
-    var session = this.sessionSupplier.get();
+    var eventBuilder = StatisticsEvent.builder()
+            .eventType(eventType)
+            .timestamp(timestamp)
+            .user(buildUser())
+            .metaData(metaData);
 
-    requireNonNull(session.getId());
-    return StatisticsEvent.builder()
-        .eventType(this.eventType)
-        .timestamp(this.timestamp)
-        .sessionId(session.getId())
-        .consultingType(buildConsultingType(session))
-        .agency(buildAgency(session))
-        .user(buildUser())
-        .metaData(this.metaData)
-        .build();
+    if (isNull(sessionSupplier)) {
+      if (eventType != EventType.START_VIDEO_CALL) {
+        throw new IllegalArgumentException("Mandatory session of event type " + eventType + " missing.");
+      }
+    } else {
+      var session = sessionSupplier.get();
+      requireNonNull(session.getId());
+      eventBuilder
+              .sessionId(session.getId())
+              .consultingType(buildConsultingType(session))
+              .agency(buildAgency(session));
+    }
+
+    return eventBuilder.build();
   }
 
   private void validateAttributes() {

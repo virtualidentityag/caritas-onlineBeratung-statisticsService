@@ -273,9 +273,6 @@ components:
         isAnonymousConversationAllowed:
           type: boolean
           example: false
-        isSetEmailAllowed:
-          type: boolean
-          example: true
         showAskerProfile:
           type: boolean
           example: true
@@ -295,9 +292,6 @@ components:
             slug:
               type: string
               example: part-of-url
-            lockedAgencies:
-              type: boolean
-              example: false
             excludeNonMainConsultantsFromTeamSessions:
               type: boolean
               example: true
@@ -313,15 +307,9 @@ components:
             sendFurtherStepsMessage:
               type: boolean
               example: true
-            sendSaveSessionDataMessage:
-              type: boolean
-              example: false
             sessionDataInitializing:
               allOf:
                 - $ref: '#/components/schemas/SessionDataInitializingDTO'
-            monitoring:
-              allOf:
-                - $ref: '#/components/schemas/MonitoringDTO'
             initializeFeedbackChat:
               type: boolean
               example: true
@@ -374,9 +362,6 @@ components:
         isAnonymousConversationAllowed:
           type: boolean
           example: false
-        isSetEmailAllowed:
-          type: boolean
-          example: true
         showAskerProfile:
           type: boolean
           example: true
@@ -386,18 +371,12 @@ components:
         languageFormal:
           type: boolean
           example: true
-        lockedAgencies:
-          type: boolean
-          example: false
         consultantBoundedToConsultingType:
           type: boolean
           example: false
         sendFurtherStepsMessage:
           type: boolean
           example: true
-        sendSaveSessionDataMessage:
-          type: boolean
-          example: false
         initializeFeedbackChat:
           type: boolean
           example: true
@@ -428,9 +407,6 @@ components:
         sessionDataInitializing:
           allOf:
             - $ref: '#/components/schemas/SessionDataInitializingDTO'
-        monitoring:
-          allOf:
-            - $ref: '#/components/schemas/MonitoringDTO'
         roles:
           $ref: '#/components/schemas/RolesDTO'
         notifications:
@@ -574,16 +550,6 @@ components:
           type: boolean
           example: true
 
-    MonitoringDTO:
-      type: object
-      properties:
-        initializeMonitoring:
-          type: boolean
-          example: true
-        monitoringTemplateFile:
-          type: string
-          example: file.json
-
     RolesDTO:
       type: object
       properties:
@@ -705,9 +671,6 @@ components:
         sendFurtherStepsMessage:
           type: boolean
           example: true
-        sendSaveSessionDataMessage:
-          type: boolean
-          example: false
         welcomeMessage:
           allOf:
             - $ref: '#/components/schemas/WelcomeMessageDTO'

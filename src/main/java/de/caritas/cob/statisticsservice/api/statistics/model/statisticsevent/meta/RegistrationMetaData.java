@@ -13,12 +13,15 @@ import lombok.NoArgsConstructor;
 public class RegistrationMetaData {
 
   private Long tenantId;
+  private String tenantName;
+  private String agencyName;
   private String registrationDate;
   private Integer age;
   private String gender;
   private String counsellingRelation;
-  private List<String> topicsInternalAttributes = null;
+  private List<String> topicsInternalAttributes;
   private String mainTopicInternalAttribute;
   private String postalCode;
+  private String referer;
 
 }

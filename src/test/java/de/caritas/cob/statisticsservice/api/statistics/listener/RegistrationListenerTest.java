@@ -95,6 +95,7 @@ public class RegistrationListenerTest {
         .topicsInternalAttributes(List.of("angeho01", "angeho13"))
         .mainTopicInternalAttribute("angeho01")
         .postalCode("99999")
+        .referer("aReferer")
         .timestamp(OffsetDateTime.now());
 
   }
@@ -109,6 +110,7 @@ public class RegistrationListenerTest {
         .topicsInternalAttributes(eventMessage.getTopicsInternalAttributes())
         .mainTopicInternalAttribute(eventMessage.getMainTopicInternalAttribute())
         .postalCode(eventMessage.getPostalCode())
+        .referer(eventMessage.getReferer())
         .build();
   }
 

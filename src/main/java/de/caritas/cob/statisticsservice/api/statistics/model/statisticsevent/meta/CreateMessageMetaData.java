@@ -12,5 +12,8 @@ import lombok.NoArgsConstructor;
 public class CreateMessageMetaData {
 
   private boolean hasAttachment;
+  private String receiverId;
+
+  private Long tenantId;
 
 }

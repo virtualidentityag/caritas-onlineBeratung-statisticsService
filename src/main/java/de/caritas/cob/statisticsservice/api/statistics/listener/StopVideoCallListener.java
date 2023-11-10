@@ -5,8 +5,6 @@ import de.caritas.cob.statisticsservice.api.model.StopVideoCallStatisticsEventMe
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.StartVideoCallMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.VideoCallStatus;
-import java.time.Duration;
-import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.AmqpException;
@@ -15,6 +13,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.List;
 
 /** AMQP Listener for stop video call message statistics event. */
 @Service
@@ -53,7 +54,10 @@ public class StopVideoCallListener {
   }
 
   private Query buildQuery(String videoCallUuid) {
-    return new Query().addCriteria(Criteria.where("metaData.videoCallUuid").is(videoCallUuid));
+    return new Query().addCriteria(
+            Criteria.where("metaData.videoCallUuid").is(videoCallUuid)
+                    .and("metaData.status").is(VideoCallStatus.ONGOING.toString())
+    );
   }
 
   private StartVideoCallMetaData enrichMetaData(

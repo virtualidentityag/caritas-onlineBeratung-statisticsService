@@ -45,6 +45,10 @@ public class CreateMessageListener {
   }
 
   private CreateMessageMetaData buildMetaData(CreateMessageStatisticsEventMessage eventMessage) {
-    return CreateMessageMetaData.builder().hasAttachment(eventMessage.getHasAttachment()).build();
+    return CreateMessageMetaData.builder()
+        .receiverId(eventMessage.getReceiverId())
+        .hasAttachment(eventMessage.getHasAttachment())
+        .tenantId(eventMessage.getTenantId())
+        .build();
   }
 }

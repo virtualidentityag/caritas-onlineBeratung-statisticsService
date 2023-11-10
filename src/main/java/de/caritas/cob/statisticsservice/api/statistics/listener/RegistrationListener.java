@@ -49,6 +49,8 @@ public class RegistrationListener {
   private RegistrationMetaData buildMetaData(RegistrationStatisticsEventMessage eventMessage) {
     return RegistrationMetaData.builder()
         .tenantId(eventMessage.getTenantId())
+        .tenantName(eventMessage.getTenantName())
+        .agencyName(eventMessage.getAgencyName())
         .registrationDate(eventMessage.getRegistrationDate())
         .age(eventMessage.getAge())
         .gender(eventMessage.getGender())
@@ -56,6 +58,7 @@ public class RegistrationListener {
         .topicsInternalAttributes(eventMessage.getTopicsInternalAttributes())
         .mainTopicInternalAttribute(eventMessage.getMainTopicInternalAttribute())
         .postalCode(eventMessage.getPostalCode())
+        .referer(eventMessage.getReferer())
         .build();
   }
 }

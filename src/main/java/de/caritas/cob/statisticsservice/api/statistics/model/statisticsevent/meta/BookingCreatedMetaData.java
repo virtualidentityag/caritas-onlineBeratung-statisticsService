@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingCreatedMetaData {
+public class BookingCreatedMetaData implements AdviceSeekerAwareMetaData {
 
   private String type;
   private String title;
@@ -19,5 +19,7 @@ public class BookingCreatedMetaData {
   private String uid;
   private Integer bookingId;
   private Integer currentBookingId;
+  private String adviceSeekerId;
+  private Long tenantId;
 
 }
